@@ -27,7 +27,7 @@ def assess_product(source: DataSource, product_id: str) -> ProductAssessment:
         signals = detect_signals(entity_id, source, bool(incoming[entity_id]))
         pillar_scores = {pillar: noisy_or([signal.strength for signal in signals if signal.pillar == pillar]) for pillar in PILLARS}
         composite = noisy_or([pillar_scores[pillar] * PILLAR_WEIGHTS[pillar] for pillar in PILLARS])
-        convergence = _independent_convergence(signals, pillar_scores)
+        convergence = sum(pillar_scores[pillar] >= 0.4 for pillar in PILLARS if pillar != "transparency")
         direct_listing = any(signal.pillar == "linkage" and signal.claim_kind == "FACT" for signal in signals)
         own_tier, reason = _tier(direct_listing, convergence, composite)
         docs = source.documents().get(entity_id, ())
@@ -82,34 +82,6 @@ def _tier(direct_listing: bool, convergence: int, composite: float) -> tuple[str
     if convergence >= 1 or composite >= 0.3:
         return "Watch", "At least one evidence pillar meets the watch threshold."
     return "Low", "No available pillar meets the illustrative watch threshold."
-
-
-def _independent_convergence(signals, pillar_scores: dict[str, float]) -> int:
-    """Count thresholded pillars only when backed by distinct evidence groups."""
-    groups_by_pillar = {}
-    for pillar in PILLARS:
-        if pillar == "transparency" or pillar_scores[pillar] < 0.4:
-            continue
-        groups = {
-            signal.source_group or f"source:{source_id}"
-            for signal in signals if signal.pillar == pillar
-            for source_id in (signal.source_ids or (signal.title,))
-        }
-        if groups:
-            groups_by_pillar[pillar] = groups
-
-    pillars = tuple(groups_by_pillar)
-
-    def assign(index: int, used_groups: set[str]) -> int:
-        if index == len(pillars):
-            return 0
-        pillar = pillars[index]
-        best = assign(index + 1, used_groups)
-        for group in groups_by_pillar[pillar] - used_groups:
-            best = max(best, 1 + assign(index + 1, used_groups | {group}))
-        return best
-
-    return assign(0, set())
 
 
 def _topological_order(nodes: set[str], edges, product_id: str) -> list[str]:

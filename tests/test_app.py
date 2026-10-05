@@ -36,13 +36,18 @@ def test_solar_supplier_evidence_shows_observed_route_shift():
     assert not app.exception
 
 
-def test_featured_report_case_is_the_default_and_keeps_buyers_unconfirmed():
+def test_fictional_demo_is_default_and_featured_case_remains_optional():
     app_path = Path(__file__).resolve().parents[1] / "app.py"
     app = AppTest.from_file(str(app_path), default_timeout=20).run()
-    assert next(item for item in app.selectbox if item.label == "Workspace").value == "Featured case study"
+    workspace = next(item for item in app.selectbox if item.label == "Workspace")
+    assert workspace.value == "Fictional demo"
+    assert any(item.label == "Product" for item in app.selectbox)
+
+    workspace.select("Featured case study").run()
     assert any("not independently verified by SourceSight" in item.value for item in app.warning)
     assert any("unknown. No live list lookup has been run" in item.value for item in app.info)
     assert any(item.label == "Report profile" for item in app.selectbox)
+    assert any("not independent corroboration" in item.value for item in app.caption)
     assert not app.exception
 
 

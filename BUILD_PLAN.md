@@ -49,7 +49,7 @@ Add focused tests for exact matches, fuzzy matches near the threshold, network l
 
 ## Phase 4: Supplier scoring and confidence
 
-**Build:** Implement pillar aggregation, weighted composite calculation, convergence counting, tier assignment, tier reasons, and confidence in `engine.py`. Preserve the distinction between own risk and confidence. Convergence counts independent non-transparency pillars, not signal volume. Make direct listing matches and all tier thresholds explicit and covered by tests.
+**Build:** Implement pillar aggregation, weighted composite calculation, convergence counting, tier assignment, tier reasons, and confidence in `engine.py`. Preserve the distinction between own risk and confidence. Convergence counts distinct non-transparency pillars meeting the hit threshold, not signal volume within a pillar. The original model does not adjust convergence for evidence-source dependence; communicate this limitation in case studies and reports. Make direct listing matches and all tier thresholds explicit and covered by tests.
 
 Test boundary values immediately below, at, and above each threshold. Verify that several signals in one pillar do not increase the convergence count, transparency can affect composite/confidence but never convergence, and a direct listing match yields High.
 

@@ -298,12 +298,13 @@ def render_case_study():
         st.markdown("#### Calculated assessment")
         score_a, score_b = st.columns(2)
         score_a.metric("Composite score", f"{result.composite_score:.3f}")
-        score_b.metric("Independent convergence", f"{result.convergence} / 4")
+        score_b.metric("Converging pillars", f"{result.convergence} / 4")
         st.write(result.tier_reason)
         st.caption(
-            "Illustrative engine output, not a legal or investigative determination. "
-            "The 0.45 Taiwan sector overlay and worker indicators both derive from this same report and share one source group; "
-            "they cannot count as independent convergence. No enforcement/list match or confirmed supply edge is modeled."
+            "Illustrative original-model output, not a legal or investigative determination. "
+            "The 0.45 Taiwan sector overlay and worker indicators both derive from this same report. "
+            "The original model counts thresholded pillars without source-dependence adjustment, so the two pillars are not independent corroboration. "
+            "No enforcement/list match or confirmed supply edge is modeled."
         )
         st.markdown("#### Evidence and provenance")
         st.dataframe([{
@@ -398,7 +399,7 @@ def load_source():
 
 
 with st.sidebar:
-    workspace = st.selectbox("Workspace", ("Featured case study", "Fictional demo"))
+    workspace = st.selectbox("Workspace", ("Fictional demo", "Featured case study"))
 
 if workspace == "Featured case study":
     render_case_study()

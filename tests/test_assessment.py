@@ -194,20 +194,15 @@ def test_transparency_affects_composite_and_confidence_but_not_convergence():
     assert undisclosed.confidence_score < exposed.confidence_score
 
 
-def test_same_report_exposure_and_worker_evidence_are_not_independent_convergence():
-    from sourcesight.engine import _independent_convergence
-    from sourcesight.models import Signal
+def test_original_convergence_counts_thresholded_pillars_without_source_group_adjustment():
+    source = CaseStudySource()
+    assessment = assess_product(source, "TSM-COMPAL")
+    result = assessment.suppliers["TSM-COMPAL"]
 
-    signals = (
-        Signal("exposure", "Report overlay", 0.45, "INFERENCE", "", ("REPORT-1",), source_group="report-1"),
-        Signal("worker", "Worker accounts", 0.8, "FACT", "", ("REPORT-1",), source_group="report-1"),
-        Signal("linkage", "Independent record", 0.5, "INFERENCE", "", ("REGISTRY-1",)),
-    )
-    scores = {pillar: 0.0 for pillar in ("exposure", "linkage", "trade", "worker", "transparency")}
-    scores.update(exposure=0.45, linkage=0.5, worker=0.8)
-
-    assert _independent_convergence(signals, scores) == 2
-    assert _independent_convergence(signals[:2], scores) == 1
+    assert result.pillar_scores["exposure"] >= 0.4
+    assert result.pillar_scores["worker"] >= 0.4
+    assert result.convergence == 2
+    assert result.own_tier == "Elevated"
 
 
 def test_report_case_attribution_and_interview_sample_are_preserved():
@@ -230,7 +225,7 @@ def test_case_assessments_are_standalone_and_never_high_without_list_lookup():
         assert product.edges == ()
         result = assess_product(source, product.id).suppliers[product.root_entity_id]
         assert result.own_tier != "High"
-        assert result.convergence <= 1
+        assert result.convergence <= 2
 
 
 def test_possible_buyer_names_are_not_confirmed_entities_or_propagation_edges():
