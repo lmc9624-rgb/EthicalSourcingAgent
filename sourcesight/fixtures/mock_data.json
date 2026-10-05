@@ -1,0 +1,104 @@
+{
+  "products": [
+    {
+      "id": "hoodie",
+      "name": "Everyday Cotton Hoodie",
+      "brand": "Northstar Thread",
+      "summary": "A fictional cotton hoodie with a multi-stage cotton-to-garment supply map.",
+      "root_entity_id": "E01",
+      "edges": [
+        {"from": "E05", "to": "E04", "input": "cotton lint", "share": 0.6},
+        {"from": "E06", "to": "E04", "input": "cotton lint", "share": 0.4},
+        {"from": "E04", "to": "E03", "input": "cotton yarn", "share": 0.8},
+        {"from": "E03", "to": "E02", "input": "knit fabric", "share": 0.9},
+        {"from": "E02", "to": "E01", "input": "finished hoodie", "share": 1.0}
+      ]
+    },
+    {
+      "id": "solar",
+      "name": "Residential Solar Module",
+      "brand": "Daybreak Energy",
+      "summary": "A fictional solar module with alternative silicon and trading routes.",
+      "root_entity_id": "S01",
+      "edges": [
+        {"from": "S04", "to": "S03", "input": "polysilicon", "share": 0.3},
+        {"from": "S06", "to": "S03", "input": "polysilicon", "share": 0.7},
+        {"from": "S03", "to": "S02", "input": "solar cells", "share": 0.8},
+        {"from": "S02", "to": "S01", "input": "solar module", "share": 1.0}
+      ]
+    },
+    {
+      "id": "tuna",
+      "name": "Canned Skipjack Tuna",
+      "brand": "Harborlight Pantry",
+      "summary": "A fictional canned tuna product with a mapped fleet and recruitment route.",
+      "root_entity_id": "T01",
+      "edges": [
+        {"from": "T05", "to": "T04", "input": "crew recruitment", "share": 0.2},
+        {"from": "T06", "to": "T04", "input": "certified catch", "share": 0.8},
+        {"from": "T04", "to": "T03", "input": "frozen tuna", "share": 0.7},
+        {"from": "T03", "to": "T02", "input": "processed tuna", "share": 0.9},
+        {"from": "T02", "to": "T01", "input": "canned tuna", "share": 1.0}
+      ]
+    }
+  ],
+  "entities": {
+    "E01": {"name": "Northstar Garment Works", "country": "VN", "region": "Dong Nai", "role": "Finished garment maker", "sector": "apparel", "address": "Fictional Lot 101, Dong Nai", "directors": ["Fictional Person A"], "owners": [], "upstream_disclosed": true},
+    "E02": {"name": "Loomway Assembly Cooperative", "country": "VN", "region": "Binh Duong", "role": "Garment assembler", "sector": "apparel", "address": "Fictional Lot 202, Binh Duong", "directors": ["Fictional Person B"], "owners": [], "upstream_disclosed": true},
+    "E03": {"name": "Riverbend Spinning House", "country": "IN", "region": "Tamil Nadu", "role": "Cotton spinner", "sector": "cotton", "address": "Fictional Mill Road 3", "directors": ["Fictional Person C"], "owners": [], "upstream_disclosed": true},
+    "E04": {"name": "Meadowgate Cotton Processing", "country": "IN", "region": "Gujarat", "role": "Cotton processor", "sector": "cotton", "address": "Fictional Mill Road 4", "directors": ["Fictional Person D"], "owners": [], "upstream_disclosed": true},
+    "E05": {"name": "Xinjiang Bright Field Ginnery", "country": "CN", "region": "Xinjiang", "role": "Cotton ginnery", "sector": "cotton", "address": "Fictional Parcel 5", "directors": ["Fictional Person E"], "owners": [], "upstream_disclosed": false},
+    "E06": {"name": "Deccan Valley Cotton Collective", "country": "IN", "region": "Maharashtra", "role": "Cotton source", "sector": "cotton", "address": "Fictional Parcel 6", "directors": ["Fictional Person F"], "owners": [], "upstream_disclosed": true},
+    "S01": {"name": "Daybreak Module Assembly", "country": "MY", "region": "Selangor", "role": "Module assembler", "sector": "solar", "address": "Fictional Solar Park 1", "directors": ["Fictional Person G"], "owners": [], "upstream_disclosed": true},
+    "S02": {"name": "Clearspan Cell Fabrication", "country": "MY", "region": "Penang", "role": "Solar cell maker", "sector": "solar", "address": "Fictional Solar Park 2", "directors": ["Fictional Person H"], "owners": [], "upstream_disclosed": true},
+    "S03": {"name": "Sunward Wafer Components", "country": "CN", "region": "Jiangsu", "role": "Wafer processor", "sector": "solar", "address": "Fictional Solar Park 3", "directors": ["Fictional Person I"], "owners": [], "upstream_disclosed": true},
+    "S04": {"name": "Strait Crest Trading", "country": "CN", "region": "Ningxia", "role": "Polysilicon trader", "sector": "solar", "address": "Fictional Trade House 4", "directors": ["Fictional Person J"], "owners": [], "upstream_disclosed": true},
+    "S06": {"name": "Baotou Northern Wafer", "country": "CN", "region": "Inner Mongolia", "role": "Wafer producer", "sector": "solar", "address": "Fictional Solar Park 6", "directors": ["Fictional Person K"], "owners": [], "upstream_disclosed": true},
+    "X01": {"name": "Strait Crest Holdings", "country": "CN", "region": "Ningxia", "role": "Holding entity", "sector": "solar", "address": "Fictional Office 7", "directors": ["Fictional Person J"], "owners": [], "upstream_disclosed": true},
+    "T01": {"name": "Harborlight Canning Works", "country": "TH", "region": "Chonburi", "role": "Canner", "sector": "seafood", "address": "Fictional Harbor 1", "directors": ["Fictional Person L"], "owners": [], "upstream_disclosed": true},
+    "T02": {"name": "Blue Current Foods", "country": "TH", "region": "Rayong", "role": "Seafood processor", "sector": "seafood", "address": "Fictional Harbor 2", "directors": ["Fictional Person M"], "owners": [], "upstream_disclosed": true},
+    "T03": {"name": "South Lantern Cold Storage", "country": "TH", "region": "Trat", "role": "Cold storage", "sector": "seafood", "address": "Fictional Harbor 3", "directors": ["Fictional Person N"], "owners": [], "upstream_disclosed": true},
+    "T04": {"name": "Openwater Fleet Services", "country": "TH", "region": "Trat", "role": "Fleet and catch consolidator", "sector": "seafood", "address": "Fictional Harbor 4", "directors": ["Fictional Person O"], "owners": [], "upstream_disclosed": true},
+    "T05": {"name": "Keelstone Crew Recruitment", "country": "TH", "region": "Trat", "role": "Recruitment broker", "sector": "recruitment", "address": "Fictional Harbor 5", "directors": ["Fictional Person P"], "owners": [], "upstream_disclosed": false},
+    "T06": {"name": "Fairwake Certified Fleet", "country": "TH", "region": "Phuket", "role": "Fishing fleet", "sector": "seafood", "address": "Fictional Harbor 6", "directors": ["Fictional Person Q"], "owners": [], "upstream_disclosed": true}
+  },
+  "listings": [
+    {"id": "LIST-MOCK-01", "entity_name": "Xinjiang Bright Field Ginnery", "date": "2025-01-15", "source_type": "fictional illustrative listing", "reliability": "high"},
+    {"id": "LIST-MOCK-02", "entity_name": "Strait Crest Holdings", "date": "2025-02-01", "source_type": "fictional illustrative listing", "reliability": "high"}
+  ],
+  "enforcement_events": [
+    {"id": "EVENT-MOCK-01", "entity_id": "S04", "date": "2025-02-01", "source_type": "fictional illustrative event", "reliability": "high", "summary": "Fictional customs review event for demonstrating temporal trade comparisons."}
+  ],
+  "sector_baselines": [
+    {"sector": "apparel", "country": "", "region": "", "score": 0.05, "source_id": "BASE-MOCK-APPAREL"},
+    {"sector": "cotton", "country": "", "region": "", "score": 0.10, "source_id": "BASE-MOCK-COTTON"},
+    {"sector": "cotton", "country": "CN", "region": "", "score": 0.45, "source_id": "BASE-MOCK-COTTON-CN"},
+    {"sector": "cotton", "country": "CN", "region": "Xinjiang", "score": 0.80, "source_id": "BASE-MOCK-COTTON-XJ"},
+    {"sector": "solar", "country": "", "region": "", "score": 0.05, "source_id": "BASE-MOCK-SOLAR"},
+    {"sector": "solar", "country": "CN", "region": "Inner Mongolia", "score": 0.75, "source_id": "BASE-MOCK-SOLAR-IM"},
+    {"sector": "solar", "country": "CN", "region": "Ningxia", "score": 0.75, "source_id": "BASE-MOCK-SOLAR-NX"},
+    {"sector": "seafood", "country": "", "region": "", "score": 0.05, "source_id": "BASE-MOCK-SEAFOOD"},
+    {"sector": "recruitment", "country": "", "region": "", "score": 0.05, "source_id": "BASE-MOCK-RECRUIT"}
+  ],
+  "trade_profiles": {
+    "S04": {
+      "id": "TRADE-MOCK-S04", "monthly_capacity": 1000, "price_floor": 40,
+      "months": [
+        {"date": "2024-11-01", "exports": 700, "price": 52},
+        {"date": "2024-12-01", "exports": 710, "price": 51},
+        {"date": "2025-01-01", "exports": 690, "price": 50},
+        {"date": "2025-02-01", "exports": 1300, "price": 49},
+        {"date": "2025-03-01", "exports": 950, "price": 48},
+        {"date": "2025-04-01", "exports": 900, "price": 47}
+      ]
+    }
+  },
+  "documents": {
+    "E05": [
+      {"id": "DOC-MOCK-E05", "type": "fictional worker-interview summary", "date": "2025-03-10", "reliability": "high", "summary": "Fictional training note records a concern for further corroboration.", "ilo_indicators": ["restriction_of_movement"]}
+    ],
+    "T05": [
+      {"id": "DOC-MOCK-T05", "type": "fictional worker-interview summary", "date": "2025-04-20", "reliability": "high", "summary": "Fictional training note describes reported recruitment debt and withheld wages.", "ilo_indicators": ["debt_bondage", "withholding_of_wages"]}
+    ]
+  }
+}
