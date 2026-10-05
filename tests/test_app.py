@@ -69,8 +69,10 @@ def test_report_geography_has_clickable_investigation_entities():
     assert manufacturer_nodes
     assert all(point["color"] == [240, 161, 93, 240] for point in manufacturer_nodes)
     buyer_layer = next(layer for layer in deck["layers"] if layer.get("id") == "investigation-contacted-buyers")
+    assert buyer_layer["@@type"] == "PolygonLayer"
     assert buyer_layer["data"]
     assert all(point["symbol"] == "◆" for point in buyer_layer["data"])
+    assert all(len(point["marker_polygon"]) == 4 for point in buyer_layer["data"])
     assert all(point.get("issue") and point.get("source_note") for point in entity_layer["data"])
     home_node = next(point for point in entity_layer["data"] if point["node_id"] == "WORKER-HOME-VN")
     assert home_node["linked_score"] is None
@@ -105,9 +107,9 @@ def test_recruitment_debt_lens_compares_fee_ranges_without_extrapolating_populat
 
 def test_pydeck_single_object_selection_picks_clicked_node():
     class MapSelection:
-        selection = {"objects": {"investigation-entities": [{"node_id": "TSM-CMC"}]}}
+        selection = {"objects": {"investigation-contacted-buyers": [{"node_id": "CONTACTED-BUYERS-US"}]}}
 
-    assert _selected_map_node(MapSelection()) == "TSM-CMC"
+    assert _selected_map_node(MapSelection()) == "CONTACTED-BUYERS-US"
 
 
 def test_map_scores_recruiter_from_own_evidence_and_affiliates_as_linked_exposure():

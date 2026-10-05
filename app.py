@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import altair as alt
 from collections import defaultdict
+import math
 import pydeck as pdk
 import streamlit as st
 
@@ -315,6 +316,14 @@ def investigation_map_data(source):
         }
         if node_type == "Report-contacted possible buyer market":
             node["symbol"] = "◆"
+            marker_radius = 0.85
+            longitude_radius = marker_radius / max(0.35, abs(math.cos(math.radians(lat))))
+            node["marker_polygon"] = [
+                [lon, lat + marker_radius],
+                [lon + longitude_radius, lat],
+                [lon, lat - marker_radius],
+                [lon - longitude_radius, lat],
+            ]
         nodes.append(node)
         detail_by_id[node_id] = {
             "name": name, "node_type": node_type, "country": country, "locality": locality,
@@ -892,11 +901,10 @@ with geo_tab:
         stroked=True, pickable=True, auto_highlight=True,
     )
     buyer_symbol_layer = pdk.Layer(
-        "TextLayer", data=buyer_map_nodes, id="investigation-contacted-buyers",
-        get_position="[longitude, latitude]", get_text="symbol", get_size=22,
-        get_color=[96, 122, 150, 255], get_angle=0, size_units="pixels",
-        get_text_anchor="middle", get_alignment_baseline="center",
-        billboard=True, pickable=True, auto_highlight=True,
+        "PolygonLayer", data=buyer_map_nodes, id="investigation-contacted-buyers",
+        get_polygon="marker_polygon", get_fill_color=[96, 122, 150, 255],
+        get_line_color=[245, 245, 247, 255], line_width_min_pixels=2,
+        stroked=True, filled=True, extruded=False, pickable=True, auto_highlight=True,
     )
     arc_layer = pdk.Layer(
         "ArcLayer", data=relationship_arcs, id="investigation-relationships",
