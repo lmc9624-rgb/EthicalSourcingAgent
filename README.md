@@ -31,7 +31,9 @@ The test suite runs offline and checks the three fictional cases, fixture integr
 - Deterministic `DataSource`/`MockSource` contracts and validation of entity references, shares, evidence dates, reliability, ILO tags, and directed-acyclic supply maps.
 - Explainable exposure, listed-entity/network linkage, trade, worker-indicator, and transparency signals with source IDs and FACT/INFERENCE/LEAD labels.
 - Noisy-OR aggregation, independent convergence, illustrative tiers, separate evidence confidence, and share-scaled downstream risk paths.
-- Supply-route and entity tables, risk-ordered supplier selection, pillar scores, provenance, ILO indicator display, and a user-readable scoring explanation.
+- Interactive upstream-to-product supplier network with tier-colored nodes, hover details, and a highlighted inherited-risk route; exact route records remain available on demand.
+- Supplier tier distribution and comparative evidence-pillar charts, plus responsive two-column summary metrics on mobile.
+- Risk-ordered supplier selection, provenance, ILO indicator display, and a user-readable scoring explanation.
 - Focused offline tests for the hoodie, solar, and tuna acceptance behaviors and validation/propagation edge cases.
 
 ## Status and limitations
