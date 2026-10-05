@@ -7,6 +7,8 @@ from streamlit.testing.v1 import AppTest
 def test_geographic_view_renders_for_every_product():
     app_path = Path(__file__).resolve().parents[1] / "app.py"
     app = AppTest.from_file(str(app_path), default_timeout=20).run()
+    workspace = next(item for item in app.selectbox if item.label == "Workspace")
+    workspace.select("Fictional demo").run()
 
     product_options = next(item for item in app.selectbox if item.label == "Product").options
     assert len(product_options) == 3
@@ -22,6 +24,7 @@ def test_geographic_view_renders_for_every_product():
 def test_solar_supplier_evidence_shows_observed_route_shift():
     app_path = Path(__file__).resolve().parents[1] / "app.py"
     app = AppTest.from_file(str(app_path), default_timeout=20).run()
+    next(item for item in app.selectbox if item.label == "Workspace").select("Fictional demo").run()
     product_selector = next(item for item in app.selectbox if item.label == "Product")
     product_selector.select("Residential Solar Module - Daybreak Energy").run()
 
@@ -30,6 +33,16 @@ def test_solar_supplier_evidence_shows_observed_route_shift():
     assert len(route_signal) == 1
     assert route_signal.iloc[0]["Claim"] == "INFERENCE"
     assert "EVENT-MOCK-01" in route_signal.iloc[0]["Source IDs"]
+    assert not app.exception
+
+
+def test_featured_report_case_is_the_default_and_keeps_buyers_unconfirmed():
+    app_path = Path(__file__).resolve().parents[1] / "app.py"
+    app = AppTest.from_file(str(app_path), default_timeout=20).run()
+    assert next(item for item in app.selectbox if item.label == "Workspace").value == "Featured case study"
+    assert any("not independently verified by SourceSight" in item.value for item in app.warning)
+    assert any("unknown. No live list lookup has been run" in item.value for item in app.info)
+    assert any(item.label == "Report profile" for item in app.selectbox)
     assert not app.exception
 
 

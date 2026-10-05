@@ -58,7 +58,8 @@ def _exposure(entity: Entity, source: DataSource) -> list[Signal]:
         detail += f", {entity.region}"
     return [Signal("exposure", "Sector and geography exposure", float(row["score"]), "INFERENCE",
                    f"{detail} (score {row['score']:.2f}).", (row["source_id"],),
-                   "Verify origin and production conditions with current documentation.")]
+                   "Verify origin and production conditions with current documentation.",
+                   row.get("source_group"))]
 
 
 def _normalize(value: str) -> str:
@@ -200,5 +201,6 @@ def _worker(entity_id: str, source: DataSource) -> list[Signal]:
         labels = ", ".join(item.replace("_", " ") for item in indicators)
         signals.append(Signal("worker", "Document reports ILO forced-labor indicators", strength, claim,
                               f"{document['summary']} Reported indicators: {labels}. Reliability: {document['reliability']}.",
-                              (document["id"],), "Seek corroboration through safe worker engagement and independent records."))
+                              (document["id"],), "Seek corroboration through safe worker engagement and independent records.",
+                              document.get("source_group")))
     return signals

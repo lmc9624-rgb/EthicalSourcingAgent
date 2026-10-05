@@ -6,6 +6,7 @@ import pytest
 
 from sourcesight.data import DATA_PATH, MockSource
 from sourcesight.engine import _tier, assess_product
+from sourcesight.case_study import COMPANIES, REPORT, CaseStudySource, company_by_id
 from sourcesight.signals import detect_signals
 from sourcesight.validation import DataValidationError, validate_data
 
@@ -191,3 +192,62 @@ def test_transparency_affects_composite_and_confidence_but_not_convergence():
     assert undisclosed.pillar_scores["transparency"] == 0.6
     assert undisclosed.composite_score > exposed.composite_score
     assert undisclosed.confidence_score < exposed.confidence_score
+
+
+def test_same_report_exposure_and_worker_evidence_are_not_independent_convergence():
+    from sourcesight.engine import _independent_convergence
+    from sourcesight.models import Signal
+
+    signals = (
+        Signal("exposure", "Report overlay", 0.45, "INFERENCE", "", ("REPORT-1",), source_group="report-1"),
+        Signal("worker", "Worker accounts", 0.8, "FACT", "", ("REPORT-1",), source_group="report-1"),
+        Signal("linkage", "Independent record", 0.5, "INFERENCE", "", ("REGISTRY-1",)),
+    )
+    scores = {pillar: 0.0 for pillar in ("exposure", "linkage", "trade", "worker", "transparency")}
+    scores.update(exposure=0.45, linkage=0.5, worker=0.8)
+
+    assert _independent_convergence(signals, scores) == 2
+    assert _independent_convergence(signals[:2], scores) == 1
+
+
+def test_report_case_attribution_and_interview_sample_are_preserved():
+    assert REPORT["publisher"] == "Transparentem"
+    assert REPORT["interviews"] == 24
+    assert REPORT["manufacturers_interviewed"] == 7
+    assert REPORT["fieldwork"] == "November 2025-June 2026"
+    assert "not independently retrieve" in REPORT["attribution"]
+    manufacturers = [company for company in COMPANIES if not company.get("agency_profile")]
+    assert len(manufacturers) == 7
+    assert sum(company["interviews"] for company in manufacturers) == 24
+    assert company_by_id("TSM-AGENCY")["name"] == "Unnamed Vietnamese recruitment agency (Garmin hires)"
+    assert "contraception" not in company_by_id("TSM-AGENCY")["details"].lower()
+
+
+def test_case_assessments_are_standalone_and_never_high_without_list_lookup():
+    source = CaseStudySource()
+    assert source.listings() == ()
+    for product in source.products():
+        assert product.edges == ()
+        result = assess_product(source, product.id).suppliers[product.root_entity_id]
+        assert result.own_tier != "High"
+        assert result.convergence <= 1
+
+
+def test_possible_buyer_names_are_not_confirmed_entities_or_propagation_edges():
+    source = CaseStudySource()
+    products = source.products()
+    buyer_names = {buyer for company in COMPANIES for buyer in company["buyers"]}
+    assert all(not product.edges for product in products)
+    assert not buyer_names.intersection(entity.name for entity in source.entities().values())
+
+
+def test_nonresponse_does_not_change_reliability_or_claim_kind():
+    source = CaseStudySource()
+    for company in COMPANIES:
+        if company["response"] == "No response reported.":
+            document = source.documents()[company["id"]][0]
+            assert document["reliability"] == "medium"
+            assessment = assess_product(source, company["id"]).suppliers[company["id"]]
+            worker_signal = next(signal for signal in assessment.signals if signal.pillar == "worker")
+            assert worker_signal.claim_kind == "LEAD"
+            assert "medium" in worker_signal.detail

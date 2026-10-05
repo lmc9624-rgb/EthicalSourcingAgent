@@ -10,7 +10,7 @@ SourceSight helps a reviewer examine potential forced-labor risk associated with
 
 The product is decision support. It identifies risk indicators, not findings that forced labor occurred. A qualified human reviewer is responsible for assessing evidence, resolving identity matches, seeking corroboration, and deciding what action is appropriate. Scores and thresholds in the MVP are illustrative and are not legal determinations.
 
-The current MVP is a local Streamlit application backed by fictional JSON data. It demonstrates the product workflow and scoring model; it is not a production due-diligence system and does not fetch live records by default.
+The app defaults to a report-attributed Transparentem case study from user-supplied material and retains the original three fictional JSON cases in an optional demo workspace. SourceSight has not independently retrieved or verified the report PDF. The app does not fetch external records on load and is not a production due-diligence system.
 
 ## 2. Users and jobs to be done
 
@@ -67,7 +67,7 @@ Noisy-OR aggregation is used for multiple signals within a pillar and for the we
 
 ### 5.3 Convergence, tiers, and confidence
 
-Convergence counts how many of the four non-transparency pillars (exposure, linkage, trade, worker) have a pillar score of at least 0.4. Multiple signals in the same pillar may increase its score but count as only one converging pillar.
+Convergence counts how many of the four non-transparency pillars (exposure, linkage, trade, worker) have a pillar score of at least 0.4 and can be assigned distinct evidence source groups. Multiple signals in one pillar count once. When one source group underlies multiple pillars, it cannot independently corroborate itself across those pillars. Legacy signals without an explicit group use their source identifiers as groups.
 
 Tiers are assigned in this order:
 
@@ -136,3 +136,11 @@ These are regression expectations for the fictional fixtures, not claims about r
 ## 9. Future validation before production use
 
 Before applying the model to real suppliers, validate identity matching, source reliability, completeness and age of supply maps, sector/geography baselines, trade-capacity and price thresholds, ownership-network logic, worker-indicator tagging, and propagation semantics with domain experts. Test how analysts interpret inherited tiers, confidence, and uncertainty. Live integrations should preserve provenance, timestamps, licensing constraints, and a path to correct disputed or stale records. Production use should include an explicit human-review process and governance for model changes.
+
+## 10. Report-attributed case study and bounded requests
+
+- The featured case is explicitly attributed to user-supplied details from the Transparentem report *Debt Before Day One* (October 2026); SourceSight did not independently verify the PDF or allegations.
+- The seven manufacturer profiles and a separate unnamed Vietnamese recruitment-agency profile are standalone assessments. The agency must not be assigned an invented identity or unsupported allegations.
+- Report-named possible buyers and former connections are visually dashed/estimated and must not be represented as confirmed customers, product inputs, or propagation paths. Ownership statements are verification requests, not established ownership records.
+- A same-report exposure overlay and same-report worker evidence share a source group and cannot satisfy independent convergence together. List status remains unknown unless a separate, current lookup is explicitly run.
+- A manual CLI may fetch allowlisted public DOL XLSX and OpenSanctions CSV files with timeout, size, and cache bounds. It does not automatically resolve entities or alter assessments. Paid providers remain unavailable unless explicitly configured and budget-approved.

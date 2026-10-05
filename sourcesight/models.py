@@ -45,6 +45,7 @@ class Signal:
     detail: str
     source_ids: tuple[str, ...]
     next_step: str = ""
+    source_group: str | None = None
 
 
 @dataclass(frozen=True)

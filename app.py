@@ -7,6 +7,7 @@ import streamlit as st
 
 from sourcesight.data import MockSource
 from sourcesight.engine import TIER_ORDER, assess_product
+from sourcesight.case_study import COMPANIES, REPORT, CaseStudySource, company_by_id
 
 
 st.set_page_config(page_title="SourceSight", layout="wide")
@@ -92,7 +93,6 @@ h1 { font-size: 2.35rem; font-weight: 700; }
 }
 </style>
 """, unsafe_allow_html=True)
-
 
 def supply_network_chart(product, entities, assessment):
     """Build a directed upstream-to-product network with tier and route encoding."""
@@ -252,10 +252,157 @@ def geographic_supply_links(product, entities, assessment):
     return links
 
 
+def render_case_study():
+    st.markdown('<div class="eyebrow">Featured investigation / report-attributed case study</div>', unsafe_allow_html=True)
+    st.title("Debt Before Day One")
+    st.caption("Transparentem · Report dated October 2026 · Fieldwork November 2025-June 2026")
+    st.warning(
+        "Report-attributed allegations; not independently verified by SourceSight. "
+        "Indicators are not findings that forced labor occurred."
+    )
+    st.markdown(
+        f"Source: [{REPORT['publisher']} report]({REPORT['url']}). "
+        f"This case uses user-supplied report details; SourceSight could not extract or independently verify the PDF. "
+        f"The report describes {REPORT['interviews']} interviews across {REPORT['manufacturers_interviewed']} Taiwan manufacturers."
+    )
+
+    source = CaseStudySource()
+    products = {product.id: product for product in source.products()}
+    entities = source.entities()
+    labels = {company["id"]: company["name"] for company in COMPANIES}
+    selected_id = st.selectbox("Report profile", tuple(labels), format_func=labels.get)
+    company = company_by_id(selected_id)
+    assessment = assess_product(source, selected_id)
+    result = assessment.suppliers[selected_id]
+    entity = entities[selected_id]
+
+    st.subheader(company["name"])
+    st.caption(f"{entity.role} · Taiwan · Report interviews: {company['interviews']} · No facility address supplied")
+    metrics = st.columns(4)
+    metrics[0].metric("Illustrative own tier", result.own_tier)
+    metrics[1].metric("Reported fee range", company["fees"])
+    metrics[2].metric("Reported interviews", company["interviews"])
+    metrics[3].metric("Evidence confidence", f"{result.confidence} ({result.confidence_score:.2f})")
+    st.info("Enforcement and sanctions-list status: unknown. No live list lookup has been run.")
+    st.markdown(f"**Debt and recruitment account:** {company['borrowed']}. {company['details']}")
+    st.markdown(f"**Company / report response:** {company['response']}")
+    if company.get("agency_profile"):
+        st.caption("The report does not name this recruitment agency. It is kept separate from Garmin and is not assigned an employer identity or any unsupplied allegation.")
+
+    assessment_tab, buyers_tab, verify_tab, requests_tab = st.tabs(
+        ["Evidence assessment", "Possible buyer connections", "To verify", "Data requests"])
+    with assessment_tab:
+        st.markdown("#### Reported ILO indicators")
+        st.write(", ".join(item.replace("_", " ").title() for item in result.ilo_indicators)
+                 if result.ilo_indicators else "No indicators tagged in the supplied report summary.")
+        st.markdown("#### Calculated assessment")
+        score_a, score_b = st.columns(2)
+        score_a.metric("Composite score", f"{result.composite_score:.3f}")
+        score_b.metric("Independent convergence", f"{result.convergence} / 4")
+        st.write(result.tier_reason)
+        st.caption(
+            "Illustrative engine output, not a legal or investigative determination. "
+            "The 0.45 Taiwan sector overlay and worker indicators both derive from this same report and share one source group; "
+            "they cannot count as independent convergence. No enforcement/list match or confirmed supply edge is modeled."
+        )
+        st.markdown("#### Evidence and provenance")
+        st.dataframe([{
+            "Claim": signal.claim_kind, "Pillar": signal.pillar.title(), "Signal": signal.title,
+            "Strength": f"{signal.strength:.2f}", "Detail": signal.detail,
+            "Source IDs": ", ".join(signal.source_ids),
+        } for signal in result.signals], width="stretch", hide_index=True)
+        st.caption("FACT means the report made a documented claim; it does not mean SourceSight established the underlying allegation as true. Non-response does not increase reliability.")
+        st.markdown("#### Geographic context")
+        st.caption("Report material supplied for this case identifies Taiwan, but no administrative region or facility address. The marker is an approximate Taiwan-wide centroid, not a facility location.")
+        map_data = [{"latitude": 23.7, "longitude": 120.96, "label": "Taiwan · approximate country-level centroid"}]
+        marker = pdk.Layer(
+            "ScatterplotLayer", data=map_data, get_position="[longitude, latitude]",
+            get_fill_color=[240, 161, 93, 220], get_radius=45000,
+            radius_min_pixels=12, radius_max_pixels=20, pickable=True,
+        )
+        st.pydeck_chart(pdk.Deck(
+            layers=[marker], initial_view_state=pdk.ViewState(latitude=23.7, longitude=120.96, zoom=5.2),
+            map_style="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+            tooltip={"text": "{label}"},
+        ), use_container_width=True, height=330)
+
+    with buyers_tab:
+        st.markdown("#### Reported possible connections")
+        st.warning("These are report-named possible or former connections, not confirmed customers, contracts, or supply-chain edges. They do not propagate risk in SourceSight.")
+        buyers = company["buyers"]
+        if buyers:
+            rows = [{"x": 0, "y": index, "x2": 1, "y2": index,
+                     "supplier": company["name"], "buyer": buyer,
+                     "status": "Former reported connection" if "(former reported connection)" in buyer else "Possible connection; unconfirmed",
+                     "buyer_label": buyer.replace(" (former reported connection)", "")}
+                    for index, buyer in enumerate(buyers)]
+            chart = alt.Chart(alt.Data(values=rows)).encode(
+                x=alt.X("x:Q", scale=alt.Scale(domain=[-0.05, 1.05]), axis=None),
+                y=alt.Y("y:Q", scale=alt.Scale(domain=[-0.7, max(1, len(rows) - 0.3)]), axis=None),
+                x2="x2:Q", y2="y2:Q",
+                tooltip=[alt.Tooltip("supplier:N"), alt.Tooltip("buyer:N"), alt.Tooltip("status:N")],
+            )
+            links = chart.mark_rule(stroke="#E2C66F", strokeWidth=2, strokeDash=[6, 5])
+            points = alt.Chart(alt.Data(values=rows)).mark_circle(size=100, color="#F0A15D").encode(
+                x=alt.X("x:Q", scale=alt.Scale(domain=[-0.05, 1.05]), axis=None),
+                y=alt.Y("y:Q", scale=alt.Scale(domain=[-0.7, max(1, len(rows) - 0.3)]), axis=None),
+            )
+            left_labels = alt.Chart(alt.Data(values=rows)).mark_text(align="right", dx=-12, color="#F5F5F7", fontSize=11).encode(
+                x=alt.X("x:Q", scale=alt.Scale(domain=[-0.05, 1.05]), axis=None),
+                y=alt.Y("y:Q", scale=alt.Scale(domain=[-0.7, max(1, len(rows) - 0.3)]), axis=None),
+                text="supplier:N",
+            )
+            right_labels = alt.Chart(alt.Data(values=rows)).mark_text(align="left", dx=12, color="#F5F5F7", fontSize=11).encode(
+                x=alt.X("x2:Q", scale=alt.Scale(domain=[-0.05, 1.05]), axis=None),
+                y=alt.Y("y2:Q", scale=alt.Scale(domain=[-0.7, max(1, len(rows) - 0.3)]), axis=None),
+                text="buyer_label:N",
+            )
+            st.altair_chart(alt.layer(links, points, left_labels, right_labels).properties(
+                height=max(190, 42 * len(rows))).configure_view(stroke=None, fill="#16161b").configure(
+                    background="#09090c"), use_container_width=True, theme=None)
+            st.dataframe([{"Possible buyer": buyer.replace(" (former reported connection)", ""),
+                           "Report wording status": "Former reported connection" if "(former reported connection)" in buyer else "Possible connection; unconfirmed"}
+                          for buyer in buyers], width="stretch", hide_index=True)
+        else:
+            st.info("No buyer connection is supplied for this unnamed agency profile.")
+
+    with verify_tab:
+        checks = [
+            "Obtain the original report and source-level documentation; verify dates, sample descriptions, and fee amounts.",
+            "Request worker-safe, independently documented recruitment-fee and repayment records, including former workers.",
+            "Confirm current company remediation status and distinguish reported commitments from completed reimbursement.",
+            "Run current, identity-reviewed sanctions and enforcement list checks; status is unknown until then.",
+            "Verify whether any named possible buyer relationship is current, direct, and product-specific before mapping an edge.",
+        ]
+        if company["ownership_to_verify"]:
+            checks.append("Verify report-attributed ownership claims against current corporate filings: " + "; ".join(company["ownership_to_verify"]) + ".")
+        if company.get("agency_profile"):
+            checks.append("Identify the recruitment agency only through safe, lawful, independently sourced records; the report does not name it.")
+        for check in checks:
+            st.markdown(f"- {check}")
+        st.caption("Requests are verification leads, not established facts. Company non-response is not evidence that a claim is true.")
+
+    with requests_tab:
+        st.markdown("#### Free-source request runner")
+        st.write("No network requests run when this app loads. After reviewing source terms, run the bounded CLI manually from the repository:")
+        st.code("python -m sourcesight.data_requests --source dol_goods\npython -m sourcesight.data_requests --source opensanctions", language="bash")
+        st.write("The runner uses HTTPS allowlisted endpoints, a 20-second timeout, a 20 MB response limit, and a 24-hour local cache. It requests the DOL 2024 goods-list XLSX and bounded OpenSanctions OFAC and U.N. Security Council CSV datasets. Results are saved under `.cache/source_requests/` with source attribution.")
+        st.markdown("#### Paid providers")
+        st.warning("Sayari and Tradeverifyd are not configured or called. The supplied request plan estimates about 28 Sayari and 21 Tradeverifyd calls; pricing was not provided, so no cost estimate can be responsibly stated. Do not run paid queries without credentials, an approved budget, and an explicit operator action.")
+        st.caption("No API keys are collected, displayed, logged, or stored by this case-study view.")
+
+
 @st.cache_resource
 def load_source():
     return MockSource()
 
+
+with st.sidebar:
+    workspace = st.selectbox("Workspace", ("Featured case study", "Fictional demo"))
+
+if workspace == "Featured case study":
+    render_case_study()
+    st.stop()
 
 st.markdown('<div class="eyebrow">Supply chain intelligence / fictional prototype</div>', unsafe_allow_html=True)
 st.title("SourceSight")
