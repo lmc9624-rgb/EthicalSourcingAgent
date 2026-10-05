@@ -13,9 +13,9 @@ st.set_page_config(page_title="SourceSight", layout="wide")
 
 TIER_COLORS = {
     "Low": "#65C29A",
-    "Watch": "#9E5B68",
-    "Elevated": "#607A96",
-    "High": "#C7666D",
+    "Watch": "#E2C66F",
+    "Elevated": "#F0A15D",
+    "High": "#F07878",
 }
 FLOW_BLUE = "#607A96"
 RISK_RED = "#C7666D"
@@ -413,8 +413,8 @@ with evidence_tab:
     if result.inherited_tier:
         st.caption("Inherited path: " + " -> ".join(entities[item].name for item in result.risk_path))
     st.markdown("**Risk evidence by pillar**")
-    pillar_palette = {"exposure": "#69545C", "linkage": "#9E5B68", "trade": "#C7666D",
-                      "worker": "#607A96", "transparency": "#354C5C"}
+    pillar_palette = {"exposure": "#65C29A", "linkage": "#72AFD1", "trade": "#F0A15D",
+                      "worker": "#F07878", "transparency": "#E2C66F"}
     pillar_rows = [{"Pillar": pillar.title(), "Score": score, "Color": pillar_palette[pillar]}
                    for pillar, score in result.pillar_scores.items()]
     pillar_bars = alt.Chart(alt.Data(values=pillar_rows)).mark_bar(size=19, cornerRadiusEnd=3).encode(
