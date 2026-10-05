@@ -4,89 +4,111 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#071a2b">
-  <meta name="description" content="SourceSight explores report-attributed worker evidence and supply-chain connections in the Taiwan recruitment-fee investigation.">
-  <title>SourceSight | Recruitment Debt in Taiwan's Supply Chains</title>
-  <meta http-equiv="refresh" content="0; url=https://sourcesight9624.streamlit.app">
-  <script>window.location.replace("https://sourcesight9624.streamlit.app");</script>
-  <style>
-    :root {
-      color-scheme: dark;
-      --navy: #071a2b;
-      --panel: #10263a;
-      --line: #31516b;
-      --ink: #f5f5f7;
-      --muted: #c6d2df;
-      --link: #c5dcff;
-      --orange: #f0a15d;
-      --teal: #65c29a;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--navy);
-      color: var(--ink);
-      font: 16px/1.6 "Avenir Next", Avenir, "Segoe UI", sans-serif;
-    }
-    .shell { width: min(920px, 100%); margin: 0 auto; padding: 38px 24px 56px; }
-    header { display: flex; align-items: center; gap: 13px; margin-bottom: 56px; }
-    .mark { width: 44px; height: 44px; flex: 0 0 44px; }
-    .brand { font-size: 20px; font-weight: 700; line-height: 1.2; }
-    .kicker { color: var(--link); font: 500 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
-    .eyebrow { color: var(--orange); font: 600 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; }
-    h1 { max-width: 780px; margin: 12px 0 18px; font-size: clamp(34px, 7vw, 58px); line-height: 1.08; }
-    .intro { max-width: 680px; margin: 0 0 28px; color: var(--muted); font-size: 18px; }
-    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0 44px; }
-    .button {
-      display: inline-flex; align-items: center; justify-content: center;
-      min-height: 48px; padding: 11px 17px; border: 1px solid var(--line);
-      border-radius: 5px; color: var(--ink); font-weight: 650; text-decoration: none;
-      background: var(--panel);
-    }
-    .button.primary { color: #101820; background: var(--orange); border-color: var(--orange); }
-    a:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; }
-    section { border-top: 1px solid var(--line); padding: 24px 0; }
-    h2 { margin: 0 0 10px; font-size: 20px; }
-    p { margin: 0 0 10px; }
-    .note { color: var(--muted); font-size: 14px; }
-    .source { color: var(--link); }
-    footer { padding-top: 18px; color: var(--muted); font-size: 13px; }
-    @media (max-width: 600px) {
-      .shell { padding: 24px 18px 40px; }
-      header { margin-bottom: 42px; }
-      .intro { font-size: 16px; }
-      .button { width: 100%; }
-    }
-  </style>
+  <meta name="description" content="Interactive SourceSight investigation view for report-attributed recruitment debt and Taiwan supply-chain connections.">
+  <title>SourceSight | Taiwan Recruitment-Debt Investigation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+  <link rel="stylesheet" href="./app.css">
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script defer src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script defer src="./app.js"></script>
 </head>
 <body>
-  <main class="shell">
-    <header aria-label="SourceSight">
-      <svg class="mark" viewBox="0 0 48 48" role="img" aria-label="SourceSight mark">
-        <path d="M5 24c5.2-8.4 11.5-12.6 19-12.6S37.8 15.6 43 24c-5.2 8.4-11.5 12.6-19 12.6S10.2 32.4 5 24Z" fill="none" stroke="#B9D3FF" stroke-width="2.5"/>
-        <circle cx="24" cy="24" r="6.5" fill="#F0A15D"/>
-        <path d="M24 17.5V8M18.4 27.2l-7 5M29.6 27.2l7 5" fill="none" stroke="#65C29A" stroke-width="2.2" stroke-linecap="round"/>
-        <circle cx="24" cy="7" r="2.5" fill="#65C29A"/>
-        <circle cx="10" cy="33" r="2.5" fill="#65C29A"/>
-        <circle cx="38" cy="33" r="2.5" fill="#65C29A"/>
-      </svg>
-      <div><div class="brand">SourceSight</div><div class="kicker">SUPPLY-CHAIN HUMAN RIGHTS MONITOR</div></div>
+  <div class="shell" id="app">
+    <header class="topbar">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 48 48" role="img" aria-label="SourceSight">
+          <path d="M5 24c5.2-8.4 11.5-12.6 19-12.6S37.8 15.6 43 24c-5.2 8.4-11.5 12.6-19 12.6S10.2 32.4 5 24Z" fill="none" stroke="#B9D3FF" stroke-width="2.5"/>
+          <circle cx="24" cy="24" r="6.5" fill="#F0A15D"/><path d="M24 17.5V8M18.4 27.2l-7 5M29.6 27.2l7 5" fill="none" stroke="#65C29A" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="24" cy="7" r="2.5" fill="#65C29A"/><circle cx="10" cy="33" r="2.5" fill="#65C29A"/><circle cx="38" cy="33" r="2.5" fill="#65C29A"/>
+        </svg>
+        <div><div class="brand-name">SourceSight</div><div class="brand-kicker">SUPPLY-CHAIN HUMAN RIGHTS MONITOR</div></div>
+      </div>
+      <div class="top-source">Case study · Taiwan · Report-attributed evidence</div>
     </header>
 
-    <div class="eyebrow">Transparentem · Taiwan · 2026</div>
-    <h1>Opening the interactive SourceSight app</h1>
-    <p class="intro">You are being redirected to the live investigation. If the redirect does not start, use the button below.</p>
-    <div class="actions">
-      <a class="button primary" href="https://sourcesight9624.streamlit.app">Open SourceSight</a>
-      <a class="button" href="https://github.com/lmc9624-rgb/EthicalSourcingAgent">View source repository</a>
+    <div class="app-grid">
+      <aside class="sidebar" aria-label="Assessment controls">
+        <h2>Assessment profile</h2>
+        <label class="field-label" for="profile-select">Manufacturer / product</label>
+        <select id="profile-select" aria-label="Select manufacturer and product"></select>
+        <p class="sidebar-note">Profiles and scores are generated from the SourceSight case model.</p>
+        <hr class="side-rule">
+        <label class="upload-label" for="report-link">Case source</label>
+        <a class="upload-fake" id="report-link" href="https://transparentem.org/wp-content/uploads/2024/04/Debt-Before-Day-One-The-Struggle-of-Vietnamese-Workers-in-Taiwans-Manufacturing-Sector.pdf" target="_blank" rel="noreferrer">Open investigation PDF ↗</a>
+        <p class="upload-note">Evidence is based on the user-supplied case summary and source attribution.</p>
+        <hr class="side-rule">
+        <div class="eyebrow">Review status</div>
+        <p class="sidebar-note">Decision support for human review. No automated supplier decisions.</p>
+      </aside>
+
+      <main class="main">
+        <div class="eyebrow">Taiwan · Recruitment debt · Case assessment</div>
+        <h1 id="profile-title">Loading assessment…</h1>
+        <p class="lede" id="profile-location">Loading report-backed facility and interview context…</p>
+        <div class="notice"><strong>Evidence boundary:</strong> Findings are report-attributed and were supplied for this prototype; they have not been independently verified. Map markers show country or locality context, not confirmed factory coordinates or goods routes.</div>
+        <div class="metrics" aria-label="Assessment metrics">
+          <div class="metric"><div class="metric-label">SourceSight tier</div><div class="metric-value" id="metric-tier">—</div><div class="metric-sub" id="profile-reason"></div></div>
+          <div class="metric"><div class="metric-label">Evidence score</div><div class="metric-value" id="metric-score">—</div><div class="metric-sub">Association exposure is shown separately</div></div>
+          <div class="metric"><div class="metric-label">Confidence</div><div class="metric-value" id="metric-confidence">—</div><div class="metric-sub">Evidence coverage and specificity</div></div>
+          <div class="metric"><div class="metric-label">Worker interviews</div><div class="metric-value" id="metric-sample">—</div><div class="metric-sub">As summarized in the report</div></div>
+        </div>
+        <p class="source-line" id="report-summary"></p>
+
+        <nav class="tabs" role="tablist" aria-label="Assessment views">
+          <button class="tab" role="tab" aria-selected="true" data-tab="overview">Overview</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="map">Supply map</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="network">Affiliations &amp; buyers</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="evidence">Evidence</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="debt">Recruitment debt</button>
+        </nav>
+
+        <section class="panel active" role="tabpanel" data-panel="overview">
+          <div id="overview-panel"></div>
+          <section class="card" style="margin-top:16px"><h2>Reported indicators</h2><div class="pill-row" id="profile-indicators"></div><h3>Company response, per report</h3><p id="profile-response"></p></section>
+        </section>
+
+        <section class="panel" role="tabpanel" data-panel="map">
+          <div class="map-key" aria-label="Map legend">
+            <span class="key-item"><i class="dot orange"></i> Investigated manufacturer</span>
+            <span class="key-item"><i class="dot gold"></i> Affiliate / recruiter context</span>
+            <span class="key-item"><i class="diamond"></i> Possible buyer market</span>
+            <span class="key-item"><i class="dot blue"></i> Worker-origin context</span>
+            <span class="key-item"><i class="line-key" style="color:#72afd1"></i> Worker-origin link, not goods</span>
+            <span class="key-item"><i class="line-key" style="color:#607a96"></i> Unconfirmed buyer mention</span>
+            <span class="key-item"><i class="dot" style="background:#d8e2ee"></i> Port context only</span>
+          </div>
+          <div id="map" class="map" role="application" aria-label="Interactive map of report-named companies and geographic context"></div>
+          <article class="card map-detail" aria-live="polite"><h2 id="selected-name">Select a map marker</h2><p id="selected-type">Map entity details will appear here.</p><p><strong>Location:</strong> <span id="selected-location">—</span></p><p><strong>Score:</strong> <span id="selected-score">—</span></p><p id="selected-detail"></p><p class="small-note" id="selected-source"></p></article>
+          <p class="small-note">Ports are geographic context only. No company-specific bills of lading, product origins, or finished-goods routes are asserted.</p>
+        </section>
+
+        <section class="panel" role="tabpanel" data-panel="network">
+          <div class="notice">Affiliation-weighted exposure is distinct from independent violations. Report-named buyer relationships are possible or former connections, not confirmed sales.</div>
+          <h2>Corporate affiliations and recruiters</h2>
+          <div class="table-wrap"><table><thead><tr><th>Entity</th><th>Relationship</th><th>Report location</th><th>Evidence basis</th><th>Assessment interpretation</th></tr></thead><tbody id="affiliation-rows"></tbody></table></div>
+          <h2>Report-contacted possible buyers</h2>
+          <div class="table-wrap"><table><thead><tr><th>Company</th><th>Country</th><th>Report status</th><th>Supply-chain status</th></tr></thead><tbody id="buyer-rows"></tbody></table></div>
+        </section>
+
+        <section class="panel" role="tabpanel" data-panel="evidence">
+          <div class="notice">Evidence items preserve claim type and source IDs. Unverified allegations are not presented as adjudicated findings.</div>
+          <div id="evidence-list"></div>
+        </section>
+
+        <section class="panel" role="tabpanel" data-panel="debt">
+          <h2>Reported recruitment-fee ranges</h2>
+          <p>Comparison of report-attributed fee ranges for interviewed workers. Amounts are not loss estimates or wage deductions.</p>
+          <div class="fee-chart" id="fee-ranges"></div>
+          <p class="small-note">Fee intervals are drawn on a common USD 0–7,000 scale. The underlying report's wording and interview counts remain in the table.</p>
+          <div class="table-wrap"><table><thead><tr><th>Manufacturer</th><th>Worker-origin context</th><th>Interviewees reporting fees</th><th>Reported fee range</th><th>Debt evidence summary</th><th>Monthly broker fee, if stated</th></tr></thead><tbody id="debt-rows"></tbody></table></div>
+        </section>
+      </main>
     </div>
-
-    <section>
-      <h2>Redirecting to SourceSight</h2>
-      <p class="note">The interactive app is hosted separately from this GitHub Pages address. Report details are attributed and have not been independently verified.</p>
-    </section>
-
-    <footer>SourceSight · Decision support for human review · No automated supplier decisions</footer>
-  </main>
+  </div>
 </body>
 </html>

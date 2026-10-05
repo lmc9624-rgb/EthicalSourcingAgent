@@ -1,8 +1,8 @@
 # SourceSight
 
-## [Open SourceSight](https://sourcesight9624.streamlit.app)
+## [Open SourceSight on GitHub Pages](https://lmc9624-rgb.github.io/EthicalSourcingAgent/)
 
-The [GitHub Pages URL](https://lmc9624-rgb.github.io/EthicalSourcingAgent/) redirects to the interactive Streamlit app. [View the source repository](https://github.com/lmc9624-rgb/EthicalSourcingAgent).
+GitHub Pages hosts the browser-native SourceSight case explorer. The Python assessment engine generates `docs/data.json` during the Pages workflow; the browser app uses that snapshot for profile selection, evidence, report-named relationship context, an interactive map, and the recruitment-fee comparison. The Streamlit app remains available at [sourcesight9624.streamlit.app](https://sourcesight9624.streamlit.app). [View the source repository](https://github.com/lmc9624-rgb/EthicalSourcingAgent).
 
 SourceSight is a local supply-chain risk exploration prototype. The existing Product selector now lists seven manufacturer/product profiles from user-supplied material attributed to Transparentem's Taiwan investigation. SourceSight did not independently retrieve or verify the original PDF. The original fictional hoodie, solar, and tuna records remain in offline regression tests. This is decision support for human review, not an investigative or legal determination.
 
@@ -22,6 +22,8 @@ streamlit run app.py
 ```
 
 Streamlit prints the local URL when it starts, normally <http://localhost:8501>. No API key or live-data credentials are needed. The app does not make external data requests on load.
+
+To preview the Pages app locally, first activate the environment above and run `python scripts/build_pages_data.py`, then serve `docs/` with `python -m http.server 8765 --directory docs` and open <http://localhost:8765>. The static Pages app uses OpenStreetMap tiles and Leaflet from their public CDN; the assessment snapshot itself is generated from the existing Python model.
 
 **Current local preview:** [http://localhost:8505](http://localhost:8505) (available while the SourceSight preview server is running on this machine). For a new local run, use the URL printed by Streamlit.
 
@@ -64,6 +66,7 @@ The case-study **Data requests** panel also has an explicit **Run public list sc
 - Geographic view is interactive: selecting an investigated manufacturer or report-linked recruiter/affiliate displays the report-attributed conduct and exposure score. The Garmin recruiter is scored from its own report-tagged indicators; Mitsubishi/Yulon/Tsurumi parent or affiliate entries show association-weighted exposure only, not independent violation scores. Finished-product import routes are not included in this map yet.
 - Map symbols distinguish investigated manufacturers (orange circles) from report-contacted possible buyer markets (blue diamonds); recruiter/affiliate, worker-origin, and port-context nodes remain separately styled.
 - Geographic view includes a recruitment-debt lens comparing report-stated per-worker fee ranges, fee-paying interview counts, worker-origin countries, and debt notes. It does not multiply sample ranges into workforce totals or extrapolate beyond the interview sample.
+- GitHub Pages browser app mirrors the report-backed profile summaries and model scores using a generated JSON snapshot, with clickable map entities, evidence details, relationship tables, and fee-range comparisons; it does not claim live trade data or verified goods routes.
 - Supply map includes a geographic report-link view for the selected investigated manufacturer, recruiter/corporate-affiliation leads, and separate possible-buyer markets, with locations and location precision. Report claims remain distinguished from confirmed supplier edges.
 - Sidebar includes an agentic PDF investigation intake preview. File selection is presentational only; PDF extraction, entity resolution, and report scoring are not implemented and uploaded reports do not affect assessments.
 - Supplier tier distribution and comparative evidence-pillar charts, plus responsive two-column summary metrics on mobile.

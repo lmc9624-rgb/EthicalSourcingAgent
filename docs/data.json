@@ -1,0 +1,959 @@
+{
+  "report": {
+    "title": "Debt Before Day One",
+    "publisher": "Transparentem",
+    "report_date": "2026-10",
+    "url": "https://transparentem.org/wp-content/uploads/2026/09/Debt-Before-Day-One.pdf",
+    "fieldwork": "November 2025-June 2026",
+    "interviews": 24,
+    "manufacturers_interviewed": 7,
+    "source_group": "transparentem-debt-before-day-one-2026",
+    "attribution": "User-supplied case material attributed to the Transparentem report; SourceSight did not independently retrieve or verify the PDF or its claims."
+  },
+  "country_centroids": {
+    "CN": [
+      35.9,
+      104.2
+    ],
+    "IN": [
+      20.6,
+      78.9
+    ],
+    "VN": [
+      16.0,
+      106.0
+    ],
+    "MY": [
+      4.2,
+      102.0
+    ],
+    "TH": [
+      15.8,
+      101.0
+    ],
+    "TW": [
+      23.7,
+      120.96
+    ],
+    "PH": [
+      12.9,
+      121.8
+    ],
+    "US": [
+      37.1,
+      -95.7
+    ],
+    "HK": [
+      22.3,
+      114.2
+    ],
+    "FR": [
+      46.2,
+      2.2
+    ],
+    "JP": [
+      36.2,
+      138.3
+    ],
+    "KR": [
+      36.4,
+      127.8
+    ],
+    "CA": [
+      56.1,
+      -106.3
+    ]
+  },
+  "taiwan_localities": {
+    "Pingzhen, Taoyuan": [
+      24.945752,
+      121.218359
+    ],
+    "Guishan, Taoyuan": [
+      24.992517,
+      121.337767
+    ],
+    "Hukou Township, Hsinchu County": [
+      24.900599,
+      121.046839
+    ]
+  },
+  "pin_offsets": {
+    "TSM-COMPAL": [
+      -0.018,
+      -0.018
+    ],
+    "TSM-TSURUMI": [
+      0.018,
+      0.018
+    ],
+    "TSM-GARMIN": [
+      0.018,
+      -0.018
+    ],
+    "TSM-PEGAVISION": [
+      -0.018,
+      0.018
+    ]
+  },
+  "ports": [
+    {
+      "name": "Keelung Port",
+      "location": "Keelung, Taiwan",
+      "lat": 25.1307,
+      "lon": 121.7392
+    },
+    {
+      "name": "Taipei Port",
+      "location": "New Taipei City, Taiwan",
+      "lat": 25.155,
+      "lon": 121.385
+    },
+    {
+      "name": "Taichung Port",
+      "location": "Taichung, Taiwan",
+      "lat": 24.279,
+      "lon": 120.523
+    },
+    {
+      "name": "Kaohsiung Port",
+      "location": "Kaohsiung, Taiwan",
+      "lat": 22.615,
+      "lon": 120.283
+    }
+  ],
+  "profiles": [
+    {
+      "id": "TSM-COMPAL",
+      "name": "Compal Electronics",
+      "product": "Notebook computers",
+      "sector": "electronics",
+      "interviews": 4,
+      "workers": "Vietnamese women",
+      "worker_origin_country": "VN",
+      "fees": "$2,050-$6,400",
+      "fee_low_usd": 2050,
+      "fee_high_usd": 6400,
+      "fee_paying_workers": 4,
+      "debt_evidence": "All four interviewed workers borrowed; the report separately describes 550+ former workers who each paid over USD 6,000 and were only partly reimbursed.",
+      "monthly_broker_fee_usd": null,
+      "details": "The report says 550+ former workers paid over $6,000 and were only partly reimbursed.",
+      "response": "The report says Compal reported reimbursing current workers and announced a phased plan for former workers.",
+      "facility_context": "Pingzhen, Taoyuan",
+      "position": [
+        24.927751999999998,
+        121.200359
+      ],
+      "location_precision": "OSM locality centroid; not factory coordinates",
+      "score": 67.8,
+      "tier": "Elevated",
+      "tier_reason": "2 independent evidence pillars meet the convergence threshold.",
+      "confidence": "Medium",
+      "confidence_score": 0.65,
+      "convergence": 2,
+      "pillar_scores": {
+        "exposure": 0.45,
+        "linkage": 0.0,
+        "trade": 0.0,
+        "worker": 0.65,
+        "transparency": 0.0
+      },
+      "ilo_indicators": [
+        "debt_bondage",
+        "abuse_of_vulnerability"
+      ],
+      "signals": [
+        {
+          "pillar": "exposure",
+          "title": "Sector and geography exposure",
+          "strength": 0.45,
+          "claim": "INFERENCE",
+          "detail": "Illustrative baseline matched electronics in TW (score 0.45).",
+          "source_ids": [
+            "REPORT-OVERLAY-TW-01"
+          ],
+          "next_step": "Verify origin and production conditions with current documentation."
+        },
+        {
+          "pillar": "worker",
+          "title": "Document reports ILO forced-labor indicators",
+          "strength": 0.65,
+          "claim": "FACT",
+          "detail": "Transparentem report-attributed summary: 4 interviews; Vietnamese women; reported fees $2,050-$6,400; All interviewed workers borrowed. The report says 550+ former workers paid over $6,000 and were only partly reimbursed. Reported indicators: debt bondage, abuse of vulnerability. Reliability: high.",
+          "source_ids": [
+            "REPORT-WORKER-TSM-COMPAL"
+          ],
+          "next_step": "Seek corroboration through safe worker engagement and independent records."
+        }
+      ],
+      "buyers": [
+        {
+          "company": "Amazon",
+          "country": "US",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        },
+        {
+          "company": "Dell",
+          "country": "US",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        },
+        {
+          "company": "Lenovo",
+          "country": "HK",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        },
+        {
+          "company": "Delta Electronics",
+          "country": "TW",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        },
+        {
+          "company": "Google",
+          "country": "US",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        },
+        {
+          "company": "Nvidia",
+          "country": "US",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        }
+      ],
+      "affiliations": [],
+      "upstream_edges": []
+    },
+    {
+      "id": "TSM-GARMIN",
+      "name": "Garmin",
+      "product": "GPS devices",
+      "sector": "electronics",
+      "interviews": 4,
+      "workers": "Vietnamese women",
+      "worker_origin_country": "VN",
+      "fees": "$2,950-$4,050",
+      "fee_low_usd": 2950,
+      "fee_high_usd": 4050,
+      "fee_paying_workers": 4,
+      "debt_evidence": "All four interviewed workers borrowed; three remained in debt after 12 months.",
+      "monthly_broker_fee_usd": null,
+      "details": "The report describes deception and threats, and alleges retaliation by an unnamed Vietnamese recruitment agency.",
+      "response": "The report says Garmin reported reimbursing current employees and contacting former employees.",
+      "facility_context": "Guishan, Taoyuan",
+      "position": [
+        25.010517,
+        121.319767
+      ],
+      "location_precision": "OSM locality centroid; not factory coordinates",
+      "score": 80.3,
+      "tier": "Elevated",
+      "tier_reason": "2 independent evidence pillars meet the convergence threshold.",
+      "confidence": "Medium",
+      "confidence_score": 0.65,
+      "convergence": 2,
+      "pillar_scores": {
+        "exposure": 0.45,
+        "linkage": 0.0,
+        "trade": 0.0,
+        "worker": 0.829,
+        "transparency": 0.0
+      },
+      "ilo_indicators": [
+        "debt_bondage",
+        "abuse_of_vulnerability",
+        "deception",
+        "intimidation_and_threats"
+      ],
+      "signals": [
+        {
+          "pillar": "exposure",
+          "title": "Sector and geography exposure",
+          "strength": 0.45,
+          "claim": "INFERENCE",
+          "detail": "Illustrative baseline matched electronics in TW (score 0.45).",
+          "source_ids": [
+            "REPORT-OVERLAY-TW-01"
+          ],
+          "next_step": "Verify origin and production conditions with current documentation."
+        },
+        {
+          "pillar": "worker",
+          "title": "Document reports ILO forced-labor indicators",
+          "strength": 0.829,
+          "claim": "FACT",
+          "detail": "Transparentem report-attributed summary: 4 interviews; Vietnamese women; reported fees $2,950-$4,050; All interviewed workers borrowed; 3 remained indebted after 12 months. The report describes deception and threats, and alleges retaliation by an unnamed Vietnamese recruitment agency. Reported indicators: debt bondage, abuse of vulnerability, deception, intimidation and threats. Reliability: high.",
+          "source_ids": [
+            "REPORT-WORKER-TSM-GARMIN"
+          ],
+          "next_step": "Seek corroboration through safe worker engagement and independent records."
+        }
+      ],
+      "buyers": [
+        {
+          "company": "Amazon",
+          "country": "US",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        },
+        {
+          "company": "Decathlon",
+          "country": "FR",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        },
+        {
+          "company": "REI",
+          "country": "US",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        },
+        {
+          "company": "Best Buy",
+          "country": "US",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        },
+        {
+          "company": "Walmart",
+          "country": "US",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        }
+      ],
+      "affiliations": [
+        {
+          "id": "TSM-AGENCY",
+          "name": "Unnamed Vietnamese recruitment agency",
+          "relationship": "Recruiter for Garmin hires, per report",
+          "basis": "The brief attributes fee deception, threats and alleged retaliation to this unnamed agency.",
+          "association_weight": 1.0,
+          "country": "VN",
+          "locality": "Vietnam (country-centroid context; agency office not identified)",
+          "is_investigated": true,
+          "own_score": 43.4,
+          "linked_score": 43.4,
+          "tier": "Watch"
+        }
+      ],
+      "upstream_edges": []
+    },
+    {
+      "id": "TSM-PEGAVISION",
+      "name": "Pegavision",
+      "product": "Contact lenses",
+      "sector": "medical devices",
+      "interviews": 4,
+      "workers": "Vietnamese women",
+      "worker_origin_country": "VN",
+      "fees": "$4,500-$5,200",
+      "fee_low_usd": 4500,
+      "fee_high_usd": 5200,
+      "fee_paying_workers": 4,
+      "debt_evidence": "All four interviewed workers borrowed; one also paid a USD 900 deposit.",
+      "monthly_broker_fee_usd": [
+        50,
+        60
+      ],
+      "details": "The report describes one $900 deposit and monthly broker fees.",
+      "response": "The report says Pegavision committed to a zero-fee policy and reimbursement.",
+      "facility_context": "Guishan, Taoyuan",
+      "position": [
+        24.974517,
+        121.355767
+      ],
+      "location_precision": "OSM locality centroid; not factory coordinates",
+      "score": 67.8,
+      "tier": "Elevated",
+      "tier_reason": "2 independent evidence pillars meet the convergence threshold.",
+      "confidence": "Medium",
+      "confidence_score": 0.65,
+      "convergence": 2,
+      "pillar_scores": {
+        "exposure": 0.45,
+        "linkage": 0.0,
+        "trade": 0.0,
+        "worker": 0.65,
+        "transparency": 0.0
+      },
+      "ilo_indicators": [
+        "debt_bondage",
+        "abuse_of_vulnerability"
+      ],
+      "signals": [
+        {
+          "pillar": "exposure",
+          "title": "Sector and geography exposure",
+          "strength": 0.45,
+          "claim": "INFERENCE",
+          "detail": "Illustrative baseline matched medical devices in TW (score 0.45).",
+          "source_ids": [
+            "REPORT-OVERLAY-TW-03"
+          ],
+          "next_step": "Verify origin and production conditions with current documentation."
+        },
+        {
+          "pillar": "worker",
+          "title": "Document reports ILO forced-labor indicators",
+          "strength": 0.65,
+          "claim": "FACT",
+          "detail": "Transparentem report-attributed summary: 4 interviews; Vietnamese women; reported fees $4,500-$5,200; All interviewed workers borrowed. The report describes one $900 deposit and monthly broker fees. Reported indicators: debt bondage, abuse of vulnerability. Reliability: high.",
+          "source_ids": [
+            "REPORT-WORKER-TSM-PEGAVISION"
+          ],
+          "next_step": "Seek corroboration through safe worker engagement and independent records."
+        }
+      ],
+      "buyers": [
+        {
+          "company": "Visioneering Technologies",
+          "country": "US",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        }
+      ],
+      "affiliations": [
+        {
+          "id": "AFFILIATE-TSM-PEGAVISION-pegatron",
+          "name": "Pegatron",
+          "relationship": "Report-named corporate affiliation / ownership lead",
+          "basis": "Report names Pegatron as ultimate controller; independent ownership confirmation remains a verification lead.",
+          "association_weight": 1.0,
+          "country": "TW",
+          "locality": "Headquarters not resolved in this view",
+          "is_investigated": false,
+          "own_score": null,
+          "linked_score": 67.8,
+          "tier": "Association-weighted exposure"
+        }
+      ],
+      "upstream_edges": []
+    },
+    {
+      "id": "TSM-CMC",
+      "name": "China Motor Corporation",
+      "product": "Vehicles",
+      "sector": "automotive",
+      "interviews": 2,
+      "workers": "Thai men",
+      "worker_origin_country": "TH",
+      "fees": "$3,850-$4,200",
+      "fee_low_usd": 3850,
+      "fee_high_usd": 4200,
+      "fee_paying_workers": 2,
+      "debt_evidence": "At least one of the two interviewed workers borrowed; the report also describes monthly broker fees.",
+      "monthly_broker_fee_usd": [
+        50,
+        60
+      ],
+      "details": "The report describes monthly fees.",
+      "response": "The report says the company began an internal review; reimbursement status is unclear.",
+      "facility_context": "Facility locality not supplied",
+      "position": [
+        23.7,
+        120.96
+      ],
+      "location_precision": "Taiwan country centroid; locality not supplied",
+      "score": 56.5,
+      "tier": "Elevated",
+      "tier_reason": "2 independent evidence pillars meet the convergence threshold.",
+      "confidence": "Low",
+      "confidence_score": 0.45,
+      "convergence": 2,
+      "pillar_scores": {
+        "exposure": 0.45,
+        "linkage": 0.0,
+        "trade": 0.0,
+        "worker": 0.488,
+        "transparency": 0.0
+      },
+      "ilo_indicators": [
+        "debt_bondage",
+        "abuse_of_vulnerability"
+      ],
+      "signals": [
+        {
+          "pillar": "exposure",
+          "title": "Sector and geography exposure",
+          "strength": 0.45,
+          "claim": "INFERENCE",
+          "detail": "Illustrative baseline matched automotive in TW (score 0.45).",
+          "source_ids": [
+            "REPORT-OVERLAY-TW-02"
+          ],
+          "next_step": "Verify origin and production conditions with current documentation."
+        },
+        {
+          "pillar": "worker",
+          "title": "Document reports ILO forced-labor indicators",
+          "strength": 0.488,
+          "claim": "LEAD",
+          "detail": "Transparentem report-attributed summary: 2 interviews; Thai men; reported fees $3,850-$4,200; At least one interviewed worker borrowed. The report describes monthly fees. Reported indicators: debt bondage, abuse of vulnerability. Reliability: medium.",
+          "source_ids": [
+            "REPORT-WORKER-TSM-CMC"
+          ],
+          "next_step": "Seek corroboration through safe worker engagement and independent records."
+        }
+      ],
+      "buyers": [
+        {
+          "company": "Mitsubishi Motors",
+          "country": "JP",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        },
+        {
+          "company": "Vantage Vehicles",
+          "country": "US",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        },
+        {
+          "company": "Yulon Group",
+          "country": "TW",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        }
+      ],
+      "affiliations": [
+        {
+          "id": "AFFILIATE-TSM-CMC-mitsubishi-motors",
+          "name": "Mitsubishi Motors",
+          "relationship": "Report-named corporate affiliation / ownership lead",
+          "basis": "Report describes a 14% shareholding; this is an ownership link, not a product-supplier edge.",
+          "association_weight": 0.14,
+          "country": "JP",
+          "locality": "Headquarters not resolved in this view",
+          "is_investigated": false,
+          "own_score": null,
+          "linked_score": 7.9,
+          "tier": "Association-weighted exposure"
+        },
+        {
+          "id": "AFFILIATE-TSM-CMC-yulon-group-linked-holders",
+          "name": "Yulon Group-linked holders",
+          "relationship": "Report-named corporate affiliation / ownership lead",
+          "basis": "Report says Yulon-linked holders own at least 34%; exact entities and shareholding require verification.",
+          "association_weight": 0.34,
+          "country": "TW",
+          "locality": "Headquarters not resolved in this view",
+          "is_investigated": false,
+          "own_score": null,
+          "linked_score": 19.2,
+          "tier": "Association-weighted exposure"
+        }
+      ],
+      "upstream_edges": []
+    },
+    {
+      "id": "TSM-AOT",
+      "name": "Advanced Optoelectronic Technology (AOT)",
+      "product": "Optoelectronic components",
+      "sector": "electronics",
+      "interviews": 4,
+      "workers": "Filipino workers",
+      "worker_origin_country": "PH",
+      "fees": "$1,000-$1,200 for 3 workers",
+      "fee_low_usd": 1000,
+      "fee_high_usd": 1200,
+      "fee_paying_workers": 3,
+      "debt_evidence": "Three of four workers paid fees; one described a currency-switch loan that increased repayment burden.",
+      "monthly_broker_fee_usd": [
+        50,
+        60
+      ],
+      "details": "The report describes monthly fees. AOT did not respond to the report according to the supplied case material.",
+      "response": "No response reported.",
+      "facility_context": "Hukou Township, Hsinchu County",
+      "position": [
+        24.900599,
+        121.046839
+      ],
+      "location_precision": "OSM locality centroid; not factory coordinates",
+      "score": 62.0,
+      "tier": "Elevated",
+      "tier_reason": "2 independent evidence pillars meet the convergence threshold.",
+      "confidence": "Low",
+      "confidence_score": 0.45,
+      "convergence": 2,
+      "pillar_scores": {
+        "exposure": 0.45,
+        "linkage": 0.0,
+        "trade": 0.0,
+        "worker": 0.566,
+        "transparency": 0.0
+      },
+      "ilo_indicators": [
+        "debt_bondage",
+        "abuse_of_vulnerability",
+        "deception"
+      ],
+      "signals": [
+        {
+          "pillar": "exposure",
+          "title": "Sector and geography exposure",
+          "strength": 0.45,
+          "claim": "INFERENCE",
+          "detail": "Illustrative baseline matched electronics in TW (score 0.45).",
+          "source_ids": [
+            "REPORT-OVERLAY-TW-01"
+          ],
+          "next_step": "Verify origin and production conditions with current documentation."
+        },
+        {
+          "pillar": "worker",
+          "title": "Document reports ILO forced-labor indicators",
+          "strength": 0.566,
+          "claim": "LEAD",
+          "detail": "Transparentem report-attributed summary: 4 interviews; Filipino workers; reported fees $1,000-$1,200 for 3 workers; One worker reportedly took a currency-switch loan. The report describes monthly fees. AOT did not respond to the report according to the supplied case material. Reported indicators: debt bondage, abuse of vulnerability, deception. Reliability: medium.",
+          "source_ids": [
+            "REPORT-WORKER-TSM-AOT"
+          ],
+          "next_step": "Seek corroboration through safe worker engagement and independent records."
+        }
+      ],
+      "buyers": [
+        {
+          "company": "Garmin",
+          "country": "TW",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Former connection reported; not current or confirmed",
+          "propagates_risk": false
+        },
+        {
+          "company": "Samsung",
+          "country": "KR",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Former connection reported; not current or confirmed",
+          "propagates_risk": false
+        }
+      ],
+      "affiliations": [],
+      "upstream_edges": []
+    },
+    {
+      "id": "TSM-DGI",
+      "name": "Digital Generation International (DGI)",
+      "product": "Electronics",
+      "sector": "electronics",
+      "interviews": 3,
+      "workers": "Vietnamese women",
+      "worker_origin_country": "VN",
+      "fees": "$5,500-$6,200",
+      "fee_low_usd": 5500,
+      "fee_high_usd": 6200,
+      "fee_paying_workers": 3,
+      "debt_evidence": "Two of three interviewed workers remained in debt; the report also describes renewal and dormitory charges.",
+      "monthly_broker_fee_usd": [
+        50,
+        60
+      ],
+      "details": "The report describes a $1,800 renewal fee and dormitory charges. DGI did not respond according to the supplied case material.",
+      "response": "No response reported.",
+      "facility_context": "Facility locality not supplied",
+      "position": [
+        23.7,
+        120.96
+      ],
+      "location_precision": "Taiwan country centroid; locality not supplied",
+      "score": 56.5,
+      "tier": "Elevated",
+      "tier_reason": "2 independent evidence pillars meet the convergence threshold.",
+      "confidence": "Low",
+      "confidence_score": 0.45,
+      "convergence": 2,
+      "pillar_scores": {
+        "exposure": 0.45,
+        "linkage": 0.0,
+        "trade": 0.0,
+        "worker": 0.488,
+        "transparency": 0.0
+      },
+      "ilo_indicators": [
+        "debt_bondage",
+        "abuse_of_vulnerability"
+      ],
+      "signals": [
+        {
+          "pillar": "exposure",
+          "title": "Sector and geography exposure",
+          "strength": 0.45,
+          "claim": "INFERENCE",
+          "detail": "Illustrative baseline matched electronics in TW (score 0.45).",
+          "source_ids": [
+            "REPORT-OVERLAY-TW-01"
+          ],
+          "next_step": "Verify origin and production conditions with current documentation."
+        },
+        {
+          "pillar": "worker",
+          "title": "Document reports ILO forced-labor indicators",
+          "strength": 0.488,
+          "claim": "LEAD",
+          "detail": "Transparentem report-attributed summary: 3 interviews; Vietnamese women; reported fees $5,500-$6,200; 2 interviewed workers remained indebted. The report describes a $1,800 renewal fee and dormitory charges. DGI did not respond according to the supplied case material. Reported indicators: debt bondage, abuse of vulnerability. Reliability: medium.",
+          "source_ids": [
+            "REPORT-WORKER-TSM-DGI"
+          ],
+          "next_step": "Seek corroboration through safe worker engagement and independent records."
+        }
+      ],
+      "buyers": [
+        {
+          "company": "Delta Electronics",
+          "country": "TW",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        },
+        {
+          "company": "Foxconn",
+          "country": "TW",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        },
+        {
+          "company": "Acer",
+          "country": "TW",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Former connection reported; not current or confirmed",
+          "propagates_risk": false
+        }
+      ],
+      "affiliations": [],
+      "upstream_edges": []
+    },
+    {
+      "id": "TSM-TSURUMI",
+      "name": "Tsurumi Pump",
+      "product": "Water pumps",
+      "sector": "machinery",
+      "interviews": 3,
+      "workers": "Vietnamese men",
+      "worker_origin_country": "VN",
+      "fees": "$6,200-$6,300",
+      "fee_low_usd": 6200,
+      "fee_high_usd": 6300,
+      "fee_paying_workers": 3,
+      "debt_evidence": "All three interviewed workers took on debt, sometimes with interest or by mortgaging family land.",
+      "monthly_broker_fee_usd": null,
+      "details": "No response reported according to the supplied case material.",
+      "response": "No response reported.",
+      "facility_context": "Pingzhen, Taoyuan",
+      "position": [
+        24.963752,
+        121.23635900000001
+      ],
+      "location_precision": "OSM locality centroid; not factory coordinates",
+      "score": 56.5,
+      "tier": "Elevated",
+      "tier_reason": "2 independent evidence pillars meet the convergence threshold.",
+      "confidence": "Low",
+      "confidence_score": 0.45,
+      "convergence": 2,
+      "pillar_scores": {
+        "exposure": 0.45,
+        "linkage": 0.0,
+        "trade": 0.0,
+        "worker": 0.488,
+        "transparency": 0.0
+      },
+      "ilo_indicators": [
+        "debt_bondage",
+        "abuse_of_vulnerability"
+      ],
+      "signals": [
+        {
+          "pillar": "exposure",
+          "title": "Sector and geography exposure",
+          "strength": 0.45,
+          "claim": "INFERENCE",
+          "detail": "Illustrative baseline matched machinery in TW (score 0.45).",
+          "source_ids": [
+            "REPORT-OVERLAY-TW-04"
+          ],
+          "next_step": "Verify origin and production conditions with current documentation."
+        },
+        {
+          "pillar": "worker",
+          "title": "Document reports ILO forced-labor indicators",
+          "strength": 0.488,
+          "claim": "LEAD",
+          "detail": "Transparentem report-attributed summary: 3 interviews; Vietnamese men; reported fees $6,200-$6,300; All interviewed workers remained indebted. No response reported according to the supplied case material. Reported indicators: debt bondage, abuse of vulnerability. Reliability: medium.",
+          "source_ids": [
+            "REPORT-WORKER-TSM-TSURUMI"
+          ],
+          "next_step": "Seek corroboration through safe worker engagement and independent records."
+        }
+      ],
+      "buyers": [
+        {
+          "company": "Technosub",
+          "country": "CA",
+          "tier_position": "Potential direct buyer (Tier 1 downstream if confirmed)",
+          "status": "Possible connection named in report; unconfirmed",
+          "propagates_risk": false
+        }
+      ],
+      "affiliations": [
+        {
+          "id": "AFFILIATE-TSM-TSURUMI-tsurumi-manufacturing",
+          "name": "Tsurumi Manufacturing",
+          "relationship": "Report-named corporate affiliation / ownership lead",
+          "basis": "Report describes Tsurumi Pump as a subsidiary; independent ownership confirmation remains a verification lead.",
+          "association_weight": 1.0,
+          "country": "JP",
+          "locality": "Headquarters not resolved in this view",
+          "is_investigated": false,
+          "own_score": null,
+          "linked_score": 56.5,
+          "tier": "Association-weighted exposure"
+        }
+      ],
+      "upstream_edges": []
+    }
+  ],
+  "recruiter": {
+    "id": "TSM-AGENCY",
+    "name": "Unnamed Vietnamese recruitment agency",
+    "country": "VN",
+    "location": "Office location not identified in the brief",
+    "relationship": "The report attributes fee deception, threats, and alleged retaliation involving Garmin hires to an unnamed recruiter.",
+    "score": 43.4,
+    "tier": "Watch",
+    "reason": "At least one evidence pillar meets the watch threshold.",
+    "signals": [
+      {
+        "pillar": "exposure",
+        "title": "Sector and geography exposure",
+        "strength": 0.45,
+        "claim": "INFERENCE",
+        "detail": "Illustrative baseline matched electronics in TW (score 0.45).",
+        "source_ids": [
+          "REPORT-OVERLAY-TW-01"
+        ],
+        "next_step": "Verify origin and production conditions with current documentation."
+      },
+      {
+        "pillar": "worker",
+        "title": "Document reports ILO forced-labor indicators",
+        "strength": 0.3,
+        "claim": "FACT",
+        "detail": "Transparentem report-attributed summary: 4 interviews; Vietnamese women interviewed about Garmin recruitment; reported fees See Garmin factory profile; Not separately quantified for the agency profile. The report attributes threats and alleged retaliation to this unnamed agency. No named agency identity or additional allegation is supplied here. Reported indicators: intimidation and threats. Reliability: high.",
+        "source_ids": [
+          "REPORT-WORKER-TSM-AGENCY"
+        ],
+        "next_step": "Seek corroboration through safe worker engagement and independent records."
+      }
+    ]
+  },
+  "debt_comparison": [
+    {
+      "company_id": "TSM-COMPAL",
+      "company": "Compal Electronics",
+      "worker_origin_country": "VN",
+      "workers_interviewed": 4,
+      "workers_with_reported_fees": 4,
+      "fee_low_usd": 2050,
+      "fee_high_usd": 6400,
+      "debt_evidence": "All four interviewed workers borrowed; the report separately describes 550+ former workers who each paid over USD 6,000 and were only partly reimbursed.",
+      "monthly_broker_fee_usd": null
+    },
+    {
+      "company_id": "TSM-GARMIN",
+      "company": "Garmin",
+      "worker_origin_country": "VN",
+      "workers_interviewed": 4,
+      "workers_with_reported_fees": 4,
+      "fee_low_usd": 2950,
+      "fee_high_usd": 4050,
+      "debt_evidence": "All four interviewed workers borrowed; three remained in debt after 12 months.",
+      "monthly_broker_fee_usd": null
+    },
+    {
+      "company_id": "TSM-PEGAVISION",
+      "company": "Pegavision",
+      "worker_origin_country": "VN",
+      "workers_interviewed": 4,
+      "workers_with_reported_fees": 4,
+      "fee_low_usd": 4500,
+      "fee_high_usd": 5200,
+      "debt_evidence": "All four interviewed workers borrowed; one also paid a USD 900 deposit.",
+      "monthly_broker_fee_usd": [
+        50,
+        60
+      ]
+    },
+    {
+      "company_id": "TSM-CMC",
+      "company": "China Motor Corporation",
+      "worker_origin_country": "TH",
+      "workers_interviewed": 2,
+      "workers_with_reported_fees": 2,
+      "fee_low_usd": 3850,
+      "fee_high_usd": 4200,
+      "debt_evidence": "At least one of the two interviewed workers borrowed; the report also describes monthly broker fees.",
+      "monthly_broker_fee_usd": [
+        50,
+        60
+      ]
+    },
+    {
+      "company_id": "TSM-AOT",
+      "company": "Advanced Optoelectronic Technology (AOT)",
+      "worker_origin_country": "PH",
+      "workers_interviewed": 4,
+      "workers_with_reported_fees": 3,
+      "fee_low_usd": 1000,
+      "fee_high_usd": 1200,
+      "debt_evidence": "Three of four workers paid fees; one described a currency-switch loan that increased repayment burden.",
+      "monthly_broker_fee_usd": [
+        50,
+        60
+      ]
+    },
+    {
+      "company_id": "TSM-DGI",
+      "company": "Digital Generation International (DGI)",
+      "worker_origin_country": "VN",
+      "workers_interviewed": 3,
+      "workers_with_reported_fees": 3,
+      "fee_low_usd": 5500,
+      "fee_high_usd": 6200,
+      "debt_evidence": "Two of three interviewed workers remained in debt; the report also describes renewal and dormitory charges.",
+      "monthly_broker_fee_usd": [
+        50,
+        60
+      ]
+    },
+    {
+      "company_id": "TSM-TSURUMI",
+      "company": "Tsurumi Pump",
+      "worker_origin_country": "VN",
+      "workers_interviewed": 3,
+      "workers_with_reported_fees": 3,
+      "fee_low_usd": 6200,
+      "fee_high_usd": 6300,
+      "debt_evidence": "All three interviewed workers took on debt, sometimes with interest or by mortgaging family land.",
+      "monthly_broker_fee_usd": null
+    }
+  ]
+}
