@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071a2b">
+  <meta name="description" content="SourceSight explores report-attributed worker evidence and supply-chain connections in the Taiwan recruitment-fee investigation.">
+  <title>SourceSight | Recruitment Debt in Taiwan's Supply Chains</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --navy: #071a2b;
+      --panel: #10263a;
+      --line: #31516b;
+      --ink: #f5f5f7;
+      --muted: #c6d2df;
+      --link: #c5dcff;
+      --orange: #f0a15d;
+      --teal: #65c29a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--navy);
+      color: var(--ink);
+      font: 16px/1.6 "Avenir Next", Avenir, "Segoe UI", sans-serif;
+    }
+    .shell { width: min(920px, 100%); margin: 0 auto; padding: 38px 24px 56px; }
+    header { display: flex; align-items: center; gap: 13px; margin-bottom: 56px; }
+    .mark { width: 44px; height: 44px; flex: 0 0 44px; }
+    .brand { font-size: 20px; font-weight: 700; line-height: 1.2; }
+    .kicker { color: var(--link); font: 500 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .eyebrow { color: var(--orange); font: 600 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; }
+    h1 { max-width: 780px; margin: 12px 0 18px; font-size: clamp(34px, 7vw, 58px); line-height: 1.08; }
+    .intro { max-width: 680px; margin: 0 0 28px; color: var(--muted); font-size: 18px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0 44px; }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 48px; padding: 11px 17px; border: 1px solid var(--line);
+      border-radius: 5px; color: var(--ink); font-weight: 650; text-decoration: none;
+      background: var(--panel);
+    }
+    .button.primary { color: #101820; background: var(--orange); border-color: var(--orange); }
+    a:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; }
+    section { border-top: 1px solid var(--line); padding: 24px 0; }
+    h2 { margin: 0 0 10px; font-size: 20px; }
+    p { margin: 0 0 10px; }
+    .note { color: var(--muted); font-size: 14px; }
+    .source { color: var(--link); }
+    footer { padding-top: 18px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 600px) {
+      .shell { padding: 24px 18px 40px; }
+      header { margin-bottom: 42px; }
+      .intro { font-size: 16px; }
+      .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header aria-label="SourceSight">
+      <svg class="mark" viewBox="0 0 48 48" role="img" aria-label="SourceSight mark">
+        <path d="M5 24c5.2-8.4 11.5-12.6 19-12.6S37.8 15.6 43 24c-5.2 8.4-11.5 12.6-19 12.6S10.2 32.4 5 24Z" fill="none" stroke="#B9D3FF" stroke-width="2.5"/>
+        <circle cx="24" cy="24" r="6.5" fill="#F0A15D"/>
+        <path d="M24 17.5V8M18.4 27.2l-7 5M29.6 27.2l7 5" fill="none" stroke="#65C29A" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="24" cy="7" r="2.5" fill="#65C29A"/>
+        <circle cx="10" cy="33" r="2.5" fill="#65C29A"/>
+        <circle cx="38" cy="33" r="2.5" fill="#65C29A"/>
+      </svg>
+      <div><div class="brand">SourceSight</div><div class="kicker">SUPPLY-CHAIN HUMAN RIGHTS MONITOR</div></div>
+    </header>
+
+    <div class="eyebrow">Transparentem · Taiwan · 2026</div>
+    <h1>Recruitment Debt in Taiwan's Supply Chains</h1>
+    <p class="intro">Explore report-attributed worker evidence, investigated manufacturers, recruitment corridors, and possible business connections.</p>
+    <div class="actions">
+      <a class="button primary" href="https://share.streamlit.io/">Open Streamlit Community Cloud</a>
+      <a class="button" href="https://github.com/lmc9624-rgb/EthicalSourcingAgent">View source repository</a>
+    </div>
+
+    <section>
+      <h2>About this investigation</h2>
+      <p>The case view covers seven Taiwan manufacturers and report-described migrant-worker recruitment fees, debt, and related allegations. It includes worker-origin context and report-named company connections.</p>
+      <p class="note">The GitHub Pages site is a static launch page. The interactive Python application runs separately on Streamlit Community Cloud; use the Streamlit link above to deploy or open that app.</p>
+    </section>
+
+    <section>
+      <h2>Evidence limitations</h2>
+      <p class="note">Case details are based on user-supplied material attributed to Transparentem and have not been independently verified by SourceSight. Report-named buyers and affiliations are leads, not confirmed supply-chain edges. Scores are screening aids, not findings of legal liability or forced labor.</p>
+    </section>
+
+    <section>
+      <h2>Open the interactive app</h2>
+      <p>To publish a working Streamlit app, connect this repository to Streamlit Community Cloud and select branch <code>main</code> with <code>app.py</code> as the entry file. Pages cannot execute the Python Streamlit server itself.</p>
+      <p class="source"><a href="https://github.com/lmc9624-rgb/EthicalSourcingAgent#run-locally">Local setup and run instructions</a></p>
+    </section>
+
+    <footer>SourceSight · Decision support for human review · No automated supplier decisions</footer>
+  </main>
+</body>
+</html>
