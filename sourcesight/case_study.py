@@ -19,7 +19,7 @@ _BASE_INDICATORS = ("debt_bondage", "abuse_of_vulnerability")
 
 COMPANIES = (
     {
-        "id": "TSM-COMPAL", "name": "Compal Electronics", "interviews": 4,
+        "id": "TSM-COMPAL", "name": "Compal Electronics", "product": "Notebook computers", "sector": "electronics", "interviews": 4,
         "workers": "Vietnamese women", "fees": "$2,050-$6,400", "borrowed": "All interviewed workers borrowed",
         "details": "The report says 550+ former workers paid over $6,000 and were only partly reimbursed.",
         "response": "The report says Compal reported reimbursing current workers and announced a phased plan for former workers.",
@@ -28,7 +28,7 @@ COMPANIES = (
         "ownership_to_verify": (),
     },
     {
-        "id": "TSM-GARMIN", "name": "Garmin own factory", "interviews": 4,
+        "id": "TSM-GARMIN", "name": "Garmin", "product": "GPS devices", "sector": "electronics", "interviews": 4,
         "workers": "Vietnamese women", "fees": "$2,950-$4,050", "borrowed": "All interviewed workers borrowed; 3 remained indebted after 12 months",
         "details": "The report describes deception and threats, and alleges retaliation by an unnamed Vietnamese recruitment agency.",
         "response": "The report says Garmin reported reimbursing current employees and contacting former employees.",
@@ -37,7 +37,7 @@ COMPANIES = (
         "ownership_to_verify": (),
     },
     {
-        "id": "TSM-PEGAVISION", "name": "Pegavision", "interviews": 4,
+        "id": "TSM-PEGAVISION", "name": "Pegavision", "product": "Contact lenses", "sector": "medical devices", "interviews": 4,
         "workers": "Vietnamese women", "fees": "$4,500-$5,200", "borrowed": "All interviewed workers borrowed",
         "details": "The report describes one $900 deposit and monthly broker fees.",
         "response": "The report says Pegavision committed to a zero-fee policy and reimbursement.",
@@ -46,7 +46,7 @@ COMPANIES = (
         "ownership_to_verify": ("Pegatron",),
     },
     {
-        "id": "TSM-CMC", "name": "China Motor Corporation", "interviews": 2,
+        "id": "TSM-CMC", "name": "China Motor Corporation", "product": "Vehicles", "sector": "automotive", "interviews": 2,
         "workers": "Thai men", "fees": "$3,850-$4,200", "borrowed": "At least one interviewed worker borrowed",
         "details": "The report describes monthly fees.",
         "response": "The report says the company began an internal review; reimbursement status is unclear.",
@@ -55,7 +55,7 @@ COMPANIES = (
         "ownership_to_verify": ("Mitsubishi Motors (reported 14% ownership claim)", "Yulon-linked entities (reported at least 34% claim)"),
     },
     {
-        "id": "TSM-AOT", "name": "Advanced Optoelectronic Technology (AOT)", "interviews": 4,
+        "id": "TSM-AOT", "name": "Advanced Optoelectronic Technology (AOT)", "product": "Optoelectronic components", "sector": "electronics", "interviews": 4,
         "workers": "Filipino workers", "fees": "$1,000-$1,200 for 3 workers", "borrowed": "One worker reportedly took a currency-switch loan",
         "details": "The report describes monthly fees. AOT did not respond to the report according to the supplied case material.",
         "response": "No response reported.", "reliability": "medium",
@@ -64,7 +64,7 @@ COMPANIES = (
         "ownership_to_verify": (),
     },
     {
-        "id": "TSM-DGI", "name": "Digital Generation International (DGI)", "interviews": 3,
+        "id": "TSM-DGI", "name": "Digital Generation International (DGI)", "product": "Electronics", "sector": "electronics", "interviews": 3,
         "workers": "Vietnamese women", "fees": "$5,500-$6,200", "borrowed": "2 interviewed workers remained indebted",
         "details": "The report describes a $1,800 renewal fee and dormitory charges. DGI did not respond according to the supplied case material.",
         "response": "No response reported.", "reliability": "medium", "indicators": _BASE_INDICATORS,
@@ -72,7 +72,7 @@ COMPANIES = (
         "ownership_to_verify": (),
     },
     {
-        "id": "TSM-TSURUMI", "name": "Tsurumi Pump", "interviews": 3,
+        "id": "TSM-TSURUMI", "name": "Tsurumi Pump", "product": "Water pumps", "sector": "machinery", "interviews": 3,
         "workers": "Vietnamese men", "fees": "$6,200-$6,300", "borrowed": "All interviewed workers remained indebted",
         "details": "No response reported according to the supplied case material.",
         "response": "No response reported.", "reliability": "medium", "indicators": _BASE_INDICATORS,
@@ -80,7 +80,7 @@ COMPANIES = (
         "ownership_to_verify": ("Tsurumi Manufacturing",),
     },
     {
-        "id": "TSM-AGENCY", "name": "Unnamed Vietnamese recruitment agency (Garmin hires)", "interviews": 4,
+        "id": "TSM-AGENCY", "name": "Unnamed Vietnamese recruitment agency (Garmin hires)", "product": "", "sector": "electronics", "interviews": 4,
         "workers": "Vietnamese women interviewed about Garmin recruitment", "fees": "See Garmin factory profile",
         "borrowed": "Not separately quantified for the agency profile",
         "details": "The report attributes threats and alleged retaliation to this unnamed agency. No named agency identity or additional allegation is supplied here.",
@@ -92,20 +92,33 @@ COMPANIES = (
 
 
 class CaseStudySource:
-    """Report-attributed profiles; possible buyer connections are not supply edges."""
+    """Report-attributed real product profiles; unconfirmed buyers are not supply edges."""
 
     def products(self) -> tuple[Product, ...]:
         return tuple(Product(
-            id=company["id"], name=company["name"], brand="Transparentem case study",
-            summary="Standalone report-attributed profile; no confirmed product input map is supplied.",
+            id=company["id"], name=company["product"], brand=company["name"],
+            summary=self._product_summary(company),
             root_entity_id=company["id"], edges=(),
-        ) for company in COMPANIES)
+        ) for company in COMPANIES if not company.get("agency_profile"))
+
+    @staticmethod
+    def _product_summary(company: dict) -> str:
+        buyers = ", ".join(company["buyers"]) or "none named"
+        summary = (
+            f"Report-attributed recruitment-fee investigation at {company['name']}: "
+            f"{company['interviews']} worker interviews ({company['workers']}); "
+            f"reported fees {company['fees']}. {company['borrowed']}. {company['details']} "
+            f"Report-stated company response: {company['response']} "
+            f"Possible buyers named in the report (unconfirmed): {buyers}. "
+            "No confirmed input map is supplied."
+        )
+        return summary.replace("$", "USD ")
 
     def entities(self) -> dict[str, Entity]:
         return {company["id"]: Entity(
             id=company["id"], name=company["name"], country="TW", region="",
             role="Recruitment agency (identity not named by report)" if company.get("agency_profile") else "Manufacturer",
-            sector="electronics manufacturing", address="", directors=(), owners=(), upstream_disclosed=False,
+            sector=company["sector"], address="", directors=(), owners=(), upstream_disclosed=None,
         ) for company in COMPANIES}
 
     def listings(self) -> tuple[dict, ...]:
@@ -115,12 +128,13 @@ class CaseStudySource:
         return ()
 
     def sector_baselines(self) -> tuple[dict, ...]:
-        return ({
-            "source_id": "REPORT-OVERLAY-TW-01", "sector": "electronics manufacturing",
+        sectors = ("electronics", "automotive", "medical devices", "machinery")
+        return tuple({
+            "source_id": f"REPORT-OVERLAY-TW-{index:02d}", "sector": sector,
             "country": "TW", "score": 0.45, "reliability": "medium",
             "date": "2026-10-01", "source_group": REPORT["source_group"],
-            "description": "Case-study overlay derived from the same Transparentem report, not independent corroboration.",
-        },)
+            "description": "Case-study overlay derived from the same Transparentem report; not independent corroboration.",
+        } for index, sector in enumerate(sectors, 1))
 
     def trade_profiles(self) -> dict[str, dict]:
         return {}

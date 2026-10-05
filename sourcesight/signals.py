@@ -33,7 +33,7 @@ def detect_signals(entity_id: str, source: DataSource, mapped_inputs: bool) -> t
     signals.extend(_linkage(entity, source))
     signals.extend(_trade(entity, source))
     signals.extend(_worker(entity_id, source))
-    if not entity.upstream_disclosed:
+    if entity.upstream_disclosed is False:
         strength = 0.6 if mapped_inputs else 0.4
         signals.append(Signal(
             "transparency", "Upstream sources are not disclosed", strength, "LEAD",

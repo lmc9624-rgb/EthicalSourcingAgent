@@ -218,6 +218,48 @@ def test_report_case_attribution_and_interview_sample_are_preserved():
     assert "contraception" not in company_by_id("TSM-AGENCY")["details"].lower()
 
 
+def test_report_data_maps_manufacturers_to_reported_products_and_sectors():
+    source = CaseStudySource()
+    products = source.products()
+    assert len(products) == 7
+    assert {(product.name, product.brand) for product in products} == {
+        ("Notebook computers", "Compal Electronics"),
+        ("GPS devices", "Garmin"),
+        ("Contact lenses", "Pegavision"),
+        ("Vehicles", "China Motor Corporation"),
+        ("Optoelectronic components", "Advanced Optoelectronic Technology (AOT)"),
+        ("Electronics", "Digital Generation International (DGI)"),
+        ("Water pumps", "Tsurumi Pump"),
+    }
+    assert all(not product.edges for product in products)
+    assert all("Possible buyers named in the report (unconfirmed)" in product.summary for product in products)
+
+
+def test_missing_upstream_disclosure_status_is_unknown_not_a_negative_signal():
+    source = CaseStudySource()
+    for entity in source.entities().values():
+        assert entity.upstream_disclosed is None
+    result = assess_product(source, "TSM-COMPAL").suppliers["TSM-COMPAL"]
+    assert not any(signal.pillar == "transparency" for signal in result.signals)
+    assert result.pillar_scores["transparency"] == 0
+
+
+def test_report_source_exposes_seven_real_product_categories():
+    products = CaseStudySource().products()
+    assert len(products) == 7
+    assert {(product.name, product.brand) for product in products} == {
+        ("Notebook computers", "Compal Electronics"),
+        ("GPS devices", "Garmin"),
+        ("Contact lenses", "Pegavision"),
+        ("Vehicles", "China Motor Corporation"),
+        ("Optoelectronic components", "Advanced Optoelectronic Technology (AOT)"),
+        ("Electronics", "Digital Generation International (DGI)"),
+        ("Water pumps", "Tsurumi Pump"),
+    }
+    assert all(not product.edges for product in products)
+    assert all("Possible buyers named in the report (unconfirmed)" in product.summary for product in products)
+
+
 def test_case_assessments_are_standalone_and_never_high_without_list_lookup():
     source = CaseStudySource()
     assert source.listings() == ()
@@ -226,6 +268,8 @@ def test_case_assessments_are_standalone_and_never_high_without_list_lookup():
         result = assess_product(source, product.id).suppliers[product.root_entity_id]
         assert result.own_tier != "High"
         assert result.convergence <= 2
+        assert result.pillar_scores["transparency"] == 0
+        assert not any(signal.pillar == "transparency" for signal in result.signals)
 
 
 def test_possible_buyer_names_are_not_confirmed_entities_or_propagation_edges():
@@ -233,7 +277,8 @@ def test_possible_buyer_names_are_not_confirmed_entities_or_propagation_edges():
     products = source.products()
     buyer_names = {buyer for company in COMPANIES for buyer in company["buyers"]}
     assert all(not product.edges for product in products)
-    assert not buyer_names.intersection(entity.name for entity in source.entities().values())
+    # Garmin is both a manufacturer profile and a report-named former buyer.
+    assert buyer_names.intersection(entity.name for entity in source.entities().values()) == {"Garmin"}
 
 
 def test_nonresponse_does_not_change_reliability_or_claim_kind():

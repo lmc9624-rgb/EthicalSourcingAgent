@@ -1,6 +1,6 @@
 # SourceSight: Build Plan
 
-This plan sequences SourceSight from a runnable mock-data MVP to a production-ready decision-support product. Build and validate the deterministic backend before relying on its results in the interface. Add live data only after the mock workflow, evidence provenance, and human-review boundaries are stable.
+This plan sequences SourceSight from a report-attributed Taiwan product selector to a production-ready decision-support product. Build and validate the deterministic backend before relying on its results in the interface. User-supplied Transparentem report summaries are the app's current case data; fictional hoodie/solar/tuna JSON remains regression data. Add external live lookups only after evidence provenance and human-review boundaries are stable.
 
 ## Build principles
 
@@ -9,11 +9,12 @@ This plan sequences SourceSight from a runnable mock-data MVP to a production-re
 - Keep signal detection, scoring, propagation, presentation, and memo writing in separate layers.
 - Add tests with each behavior, not as a final cleanup step.
 - Treat every score as explainable decision support. Never frame an indicator or tier as a finding of forced labor.
-- Keep the initial dataset fictional. Do not add API secrets or real allegations to the repository.
+- Attribute report-derived material and keep uncertainty visible; do not present allegations or possible buyers as verified facts.
+- Do not add API secrets or make external requests automatically on app load.
 
 ## Phase 0: Repository and product baseline
 
-**Build:** Open and inspect the target repository (`lm9624-rgb/Lola`), confirm its existing framework, instructions, branch protections, and CI before introducing SourceSight files. Agree on the initial product scope: local Streamlit app, fictional JSON fixtures, three demo products, deterministic scoring, and optional AI memo writing. Preserve the concept and functional specification as the current product references.
+**Build:** Confirm the target repository, framework, instructions, branch protections, and CI. Define the current app scope as a local Streamlit assessment interface backed by seven report-attributed Taiwan manufacturer/product profiles, deterministic scoring, unconfirmed buyer links kept out of supply edges, and no automatic external lookups. Retain the fictional fixtures for regression testing.
 
 **Exit checks:** The target repository and branch are confirmed; the project structure and existing conventions are known; the MVP and non-goals are recorded; secrets are not present in tracked files.
 
@@ -23,17 +24,17 @@ This plan sequences SourceSight from a runnable mock-data MVP to a production-re
 
 **Build:** Establish or adapt the Python package structure, dependency file, Streamlit entry point, startup instructions, and VS Code run/debug configuration. Add a minimal health view that starts without live credentials. Define a single command for launching the app and a single command for tests.
 
-**Exit checks:** A clean environment can install dependencies, start the app, and run the test command. The app clearly identifies itself as a mock-data demonstration. The core experience works without an Anthropic key.
+**Exit checks:** A clean environment can install dependencies, start the app, and run the test command. The app identifies the report attribution and verification limits. The core experience works without API credentials.
 
 **Deliverable:** A runnable shell with no scoring behavior embedded in UI code.
 
-## Phase 2: Data contracts and mock source
+## Phase 2: Data contracts and report-backed source
 
-**Build:** Implement typed or clearly documented contracts for products, entities, supply edges, listings, enforcement events, sector-risk rows, trade profiles, documents, and signals. Implement `DataSource` and `MockSource` so the engine depends on an interface rather than JSON file paths. Add fixture validation for required keys, valid entity references, shares in the range 0-1, valid dates, and recognized reliability and ILO-indicator values. Ensure product supply maps are directed acyclic graphs; report invalid maps instead of recursing indefinitely.
+**Build:** Keep typed or clearly documented contracts for products, entities, supply edges, listings, enforcement events, sector-risk rows, trade profiles, documents, and signals. Implement `CaseStudySource` for the seven manufacturer/product profiles and preserve `MockSource` for offline regression fixtures. Treat report-named buyers and ownership statements as possible connections/verification leads, never as confirmed edges. Represent unavailable fields such as upstream disclosure and facility-level locations as unknown instead of manufacturing negative findings. Ensure all actual supply maps are validated as directed acyclic graphs.
 
 Keep provenance fields attached to each evidence item: source identifier, source type, date where available, reliability, summary, and claim kind as derived by the engine.
 
-**Exit checks:** All three demo products load through the source interface. Invalid fixture references and malformed inputs fail with useful messages. A test source can be injected without changing the scoring code.
+**Exit checks:** All seven report product choices load through the source interface; fictional regression cases continue to load through `MockSource`. Possible buyer names remain absent from confirmed edges. Unknown real-case data creates no unsupported signal. A test source can be injected without changing the scoring code.
 
 **Deliverable:** Stable domain and data-source contracts for parallel backend and UI work.
 
@@ -69,7 +70,7 @@ Add product-level tests for the hoodie, solar, and tuna fixtures, plus small syn
 
 ## Phase 6: Core interface
 
-**Build:** Connect Streamlit to the assessment API and implement the product selector, product summary, supply map, supplier-evidence view, and scoring explanation. The map shows upstream inputs, shares, own-risk colors, inherited-risk outlines, and the root product's highlighted risk route. The evidence view sorts suppliers by own tier and score and exposes confidence, convergence, pillar values, indicators, source IDs, claim kinds, details, and follow-up steps.
+**Build:** Connect Streamlit to the assessment API and retain the existing product selector, product summary, supply map, supplier-evidence view, geographic view, and scoring explanation. The current report profiles have no confirmed input edges; render that empty-map state rather than treating possible buyers as suppliers. The evidence view exposes confidence, convergence, pillar values, reported indicators, source IDs, claim kinds, details, and follow-up steps.
 
 Keep all tier colors and explanatory labels consistent. Clearly distinguish own tier from inherited/effective tier. Provide readable empty and error states when evidence or a product map is incomplete. Do not expose raw exception traces to normal users.
 
@@ -79,7 +80,7 @@ Keep all tier colors and explanatory labels consistent. Clearly distinguish own 
 
 ## Phase 7: Memo generation and optional AI analyst
 
-**Build:** Implement the deterministic rule-based memo first. It should summarize the product tier and path, elevated/high suppliers, Watch suppliers, cited evidence, recommendations, and claim-label definitions. Include a non-finding disclaimer, generation date, and mock-data notice. Provide a Markdown download.
+**Build:** If memo generation is added, implement the deterministic rule-based memo first. Summarize report attribution, product tier, cited evidence, verification leads, company-response caveats, and claim-label definitions. Include a non-finding disclaimer, generation date, and report-source caveat. Provide a Markdown download.
 
 After the deterministic version is stable, add the optional AI analyst behind explicit configuration. Give it read-only tools for supplier listing, evidence retrieval, and risk-path retrieval. Do not allow it to alter scores or invent source IDs. Handle missing credentials and API errors cleanly, fall back to the rule-based memo, and keep credentials out of UI output and logs. Test tool arguments, unknown supplier IDs, maximum-turn behavior, API failures, and memo fallback.
 
@@ -89,17 +90,17 @@ After the deterministic version is stable, add the optional AI analyst behind ex
 
 ## Phase 8: Integrated quality, usability, and release
 
-**Build:** Run the full automated suite, type/lint checks if configured, and a manual end-to-end review of each fixture. Confirm the outputs match the acceptance criteria in `SPECIFICATION.md`: hoodie risk reaches E05 while E06 stays Low; S04 has the expected trade signals and High tier while S06 stays Watch; T05 surfaces worker indicators while T06 stays Low. Check that each memo avoids treating indicators as findings.
+**Build:** Run the full automated suite, type/lint checks if configured, and manually review all seven report product choices plus the three fictional regression cases. Confirm possible buyers are not shown as confirmed supply edges, list status remains unknown until checked, and the case warns that same-report worker/sector pillars are not independent corroboration under the original scoring model.
 
-Review accessibility and usability of labels, graph contrast, keyboard navigation, download naming, progress/error states, and narrow screens. Confirm setup instructions work from a fresh environment. Add a brief model-limitations and mock-data notice where users will see it.
+Review accessibility and usability of labels, graph contrast, keyboard navigation, download naming, progress/error states, and narrow screens. Confirm setup instructions work from a fresh environment. Keep report attribution, possible-buyer status, unknown list checks, approximate geography, and source-dependence limitations visible.
 
-**Exit checks:** Tests pass from a clean checkout; all three demo workflows can be completed; the app is startable by a new contributor; no secrets or unintended data are tracked. Review the Git diff and publish only intended task files to the confirmed repository branch.
+**Exit checks:** Tests pass from a clean checkout; all seven report product profiles and the fictional regression workflows can be exercised; the app is startable by a new contributor; no secrets or unintended data are tracked. Review the Git diff and publish only intended task files to the confirmed repository branch.
 
-**Deliverable:** Tagged or otherwise documented mock-data MVP release, depending on repository practice.
+**Deliverable:** Tagged or otherwise documented report-backed case-study prototype, depending on repository practice.
 
 ## Phase 9: Live-data readiness (separate approval)
 
-Do not begin live integrations as part of the mock MVP by default. First validate the model with intended users and domain experts. Then, one source at a time, implement a production `DataSource` adapter with authentication, licensing review, provenance, timestamps, source-quality handling, rate limits, and failure behavior. Keep connectors replaceable and avoid changing score semantics as a side effect of switching providers.
+Do not treat the report summaries as live-verified records. First validate the model with intended users and domain experts. Then, one source at a time, implement or extend a production `DataSource` adapter with authentication, licensing review, provenance, timestamps, source-quality handling, rate limits, and failure behavior. Keep connectors replaceable and avoid changing score semantics as a side effect of switching providers.
 
 Calibrate thresholds against reviewed cases; assess false positives, false negatives, stale records, entity-resolution errors, and uncertainty communication. Add a human-review and correction process before any real supplier assessment is used for operational decisions. Do not launch automated adverse action, supplier blacklisting, or legal conclusions from model scores.
 
@@ -110,7 +111,7 @@ Calibrate thresholds against reviewed cases; assess false positives, false negat
 ```text
 Repository baseline
   -> Runnable app shell
-  -> Data contracts + mock source
+  -> Report-backed source + regression fixtures
   -> Signal detectors
   -> Supplier scoring
   -> Product propagation

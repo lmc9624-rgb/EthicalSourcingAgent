@@ -33,7 +33,7 @@ class Entity:
     address: str
     directors: tuple[str, ...]
     owners: tuple[tuple[str, float], ...]
-    upstream_disclosed: bool
+    upstream_disclosed: bool | None
 
 
 @dataclass(frozen=True)

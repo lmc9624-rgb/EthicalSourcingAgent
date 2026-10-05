@@ -10,7 +10,7 @@ SourceSight helps a reviewer examine potential forced-labor risk associated with
 
 The product is decision support. It identifies risk indicators, not findings that forced labor occurred. A qualified human reviewer is responsible for assessing evidence, resolving identity matches, seeking corroboration, and deciding what action is appropriate. Scores and thresholds in the MVP are illustrative and are not legal determinations.
 
-The app defaults to a report-attributed Transparentem case study from user-supplied material and retains the original three fictional JSON cases in an optional demo workspace. SourceSight has not independently retrieved or verified the report PDF. The app does not fetch external records on load and is not a production due-diligence system.
+The app's Product selector is backed by seven Taiwan manufacturer/product profiles derived from user-supplied material attributed to Transparentem: notebook computers, GPS devices, contact lenses, vehicles, optoelectronic components, electronics, and water pumps. SourceSight has not independently retrieved or verified the report PDF. The original hoodie, solar, and tuna JSON data remains for regression tests, not as the app's product data. The app does not fetch external records on load and is not a production due-diligence system.
 
 ## 2. Users and jobs to be done
 
@@ -26,10 +26,10 @@ The tool assumes the user has a product record and at least a partial supplier/i
 1. The user opens the app and chooses one of the available products in the sidebar.
 2. SourceSight loads the product's mapped suppliers and edges, evaluates each supplier's available evidence, calculates own-risk scores and tiers, and propagates risk from inputs to buyers.
 3. The user reviews the product-level tier and risk path, then inspects the supply map to see suppliers, inputs, shares, own tiers, and the path through which inherited risk travels.
-4. The user selects suppliers in risk order and reviews pillar scores, confidence, ILO indicators, evidence, sources, and suggested next steps.
-5. The user generates a rule-based memo, or optionally uses the AI analyst when an Anthropic API key is configured. The memo can be downloaded as Markdown.
+4. The user selects a report-backed product in the existing Product selector and reviews its manufacturer-level score, confidence, ILO indicators, report-attributed evidence, sources, and suggested verification steps.
+5. The user may inspect report-named possible buyers and the bounded public-data request instructions; possible links remain unconfirmed and do not alter the assessed supply graph.
 
-The UI contains four views: **Supply map**, **Supplier evidence**, **Memo**, and **How scoring works**. The sidebar includes the product selector and a persistent notice that the current data is fictional. When configured, it also indicates whether the AI analyst is available.
+The UI keeps the existing four views: **Supply map**, **Geographic view**, **Supplier evidence**, and **How scoring works**. The sidebar Product selector lists the seven report-backed product categories with the manufacturer as the brand. Every profile preserves the existing assessment layout. Since the report does not provide confirmed input maps, no buyer mention is rendered as a confirmed supply edge or used for downstream risk propagation. Geographic markers use only approximate Taiwan country-level coordinates because facility addresses are not supplied.
 
 ## 4. Product and supply-chain data
 
@@ -37,7 +37,7 @@ A product record contains an identifier, name, brand, summary, root entity ident
 
 Each entity record includes a stable identifier, name, country, region, role, sector, registered address, directors, parent ownership records, and whether upstream sources are disclosed. Evidence records may include enforcement-list entries, enforcement events, sector/geography baselines, monthly trade profiles, and documents. Documents include source identifiers, type, date, reliability, summary, and any pre-tagged ILO indicators.
 
-All scoring inputs are accessed through a `DataSource` interface. The MVP's `MockSource` reads local JSON files. A future source implementation may provide equivalent product, entity, listing, enforcement, sector-risk, trade-profile, and document methods. Replacing the data source must not silently change scoring semantics.
+All scoring inputs are accessed through a `DataSource` interface. The app uses `CaseStudySource` to expose the seven report-backed product profiles, their report-attributed worker evidence, and sector overlays. Possible buyers and ownership claims remain narrative verification leads, not confirmed edges or linkage records. Missing upstream-disclosure status is unknown, not evidence of refusal. `MockSource` remains available for offline regression tests of the original fictional hoodie, solar, and tuna cases. Replacing a source must not silently change scoring semantics.
 
 ## 5. Supplier evidence and scoring
 
@@ -114,7 +114,7 @@ The app must describe the five pillars, convergence thresholds, downstream propa
 
 ## 7. Prototype acceptance criteria
 
-The mock cases should demonstrate distinct behaviors:
+The original fictional fixtures remain regression tests and should demonstrate distinct behaviors:
 
 - The hoodie assessment reaches High product risk through the Xinjiang ginnery (E05), while the Indian cotton source (E06) remains Low.
 - The solar case detects capacity, post-enforcement volume, and observed route-mix changes for Strait Crest Trading (S04) and assigns it High; Baotou Northern Wafer (S06), with exposure alone, remains Watch.
@@ -123,6 +123,8 @@ The mock cases should demonstrate distinct behaviors:
 - Scores, paths, sources, and supplier details remain inspectable without enabling the AI analyst.
 
 These are regression expectations for the fictional fixtures, not claims about real companies or calibration evidence for live use.
+
+The report-backed Product selector must contain the seven manufacturer/product pairings supplied in the case study. It must show worker interviews, reported fees, report-stated response, and possible buyer names as unconfirmed narrative context. It must not create confirmed buyer edges, infer a list match, or locate a factory at a fabricated address. The original scoring algorithm counts thresholded non-transparency pillars; the Taiwan overlay and worker evidence draw on the same report, so their convergence is not independent corroboration and must be explained in the case view.
 
 ## 8. Non-functional requirements and boundaries
 

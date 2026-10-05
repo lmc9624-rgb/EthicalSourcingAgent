@@ -33,7 +33,7 @@ def assess_product(source: DataSource, product_id: str) -> ProductAssessment:
         docs = source.documents().get(entity_id, ())
         non_exposure_fact = any(signal.claim_kind == "FACT" and signal.pillar != "exposure" for signal in signals)
         confidence_score = min(1.0, 0.25 + (0.2 if entity_id in source.trade_profiles() else 0)
-                               + (0.2 if docs else 0) + (0.15 if entity.upstream_disclosed else 0)
+                               + (0.2 if docs else 0) + (0.15 if entity.upstream_disclosed is True else 0)
                                + (0.2 if non_exposure_fact else 0))
         confidence = "High" if confidence_score >= 0.75 else "Medium" if confidence_score >= 0.5 else "Low"
         indicators = tuple(dict.fromkeys(indicator for document in docs for indicator in document["ilo_indicators"]))

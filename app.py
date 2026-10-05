@@ -5,7 +5,6 @@ from collections import defaultdict
 import pydeck as pdk
 import streamlit as st
 
-from sourcesight.data import MockSource
 from sourcesight.engine import TIER_ORDER, assess_product
 from sourcesight.case_study import COMPANIES, REPORT, CaseStudySource, company_by_id
 
@@ -22,7 +21,7 @@ FLOW_BLUE = "#607A96"
 RISK_RED = "#C7666D"
 COUNTRY_CENTROIDS = {
     "CN": (35.9, 104.2), "IN": (20.6, 78.9), "VN": (16.0, 106.0),
-    "MY": (4.2, 102.0), "TH": (15.8, 101.0),
+    "MY": (4.2, 102.0), "TH": (15.8, 101.0), "TW": (23.7, 120.96),
 }
 REGION_CENTROIDS = {
     ("CN", "Xinjiang"): (42.0, 85.0),
@@ -210,7 +209,7 @@ def geographic_supplier_points(entities, assessment):
         color = [int(hex_color[index:index + 2], 16) for index in (0, 2, 4)] + [225]
         points.append({
             "latitude": latitude, "longitude": longitude,
-            "location": f"{region}, {country}" if region != "Country level" else country,
+            "location": f"{region}, {country}" if region != "Country level" else f"Country level, {country}",
             "count": len(suppliers), "radius": 22000 + 10000 * min(len(suppliers) - 1, 4),
             "own_tier": highest_tier, "effective_tier": max(
                 (result.effective_tier for _, result in suppliers), key=TIER_ORDER.get),
@@ -395,23 +394,17 @@ def render_case_study():
 
 @st.cache_resource
 def load_source():
-    return MockSource()
+    return CaseStudySource()
 
 
-with st.sidebar:
-    workspace = st.selectbox("Workspace", ("Fictional demo", "Featured case study"))
-
-if workspace == "Featured case study":
-    render_case_study()
-    st.stop()
-
-st.markdown('<div class="eyebrow">Supply chain intelligence / fictional prototype</div>', unsafe_allow_html=True)
+st.markdown('<div class="eyebrow">Report-attributed investigation / Transparentem 2026</div>', unsafe_allow_html=True)
 st.title("SourceSight")
-st.caption("Follow product inputs upstream. See where indicators appear and what evidence supports them.")
+st.caption("Select a reported Taiwan product to review worker evidence, scoring, and possible buyer connections.")
 st.warning(
-    "FICTIONAL MOCK DATA ONLY. Scores and indicators prioritize questions for human review. "
-    "They are not findings that forced labor occurred, legal determinations, or allegations about real entities."
+    "REPORT-ATTRIBUTED CASE MATERIAL. The report details were supplied by the user and have not been independently verified by SourceSight. "
+    "Possible buyers are unconfirmed and are not treated as supply-chain edges. Scores are review aids, not findings that forced labor occurred."
 )
+st.caption(f"Source: [{REPORT['publisher']}, {REPORT['title']}]({REPORT['url']}) · October 2026 · 24 interviews across 7 manufacturers")
 
 try:
     source = load_source()
@@ -420,12 +413,12 @@ try:
     with st.sidebar:
         st.header("Assessment")
         selected_label = st.selectbox("Product", tuple(product_by_name))
-        st.caption("Fictional fixtures. No live sources or API key required.")
+        st.caption("Seven report-backed product profiles. Buyer mentions remain possible/unconfirmed; no live list lookup has run.")
     product = product_by_name[selected_label]
     assessment = assess_product(source, product.id)
     entities = source.entities()
 except Exception:
-    st.error("The mock assessment could not be loaded. Check the fixture records and try again.")
+    st.error("The assessment could not be loaded. Check the report data and try again.")
     st.stop()
 
 st.subheader(product.name)
@@ -446,12 +439,12 @@ map_tab, geo_tab, evidence_tab, scoring_tab = st.tabs(
 
 with map_tab:
     st.markdown("#### Supplier network")
-    st.caption("Raw inputs flow left to finished product. Node labels are supplier IDs; hover for full details. Color shows own tier; copper rings and links mark the product's highest-risk route.")
+    st.caption("Raw inputs flow left to finished product. Node labels are supplier IDs; hover for full details. Color shows own tier; coral rings and links mark the product's highest-risk route.")
     risk_edges = set(zip(assessment.risk_path, assessment.risk_path[1:]))
     if product.edges:
         st.altair_chart(supply_network_chart(product, entities, assessment), use_container_width=True, theme=None)
     else:
-        st.info("This product has no mapped input edges yet.")
+        st.info("No confirmed supplier-input edges are supplied for this reported product. Possible buyers are shown in the product summary only; they are not treated as confirmed customers or propagated risk.")
 
     tier_counts = {tier: sum(result.own_tier == tier for result in assessment.suppliers.values())
                    for tier in TIER_COLORS}
@@ -486,11 +479,12 @@ with map_tab:
                 "Buyer own tier": buyer_result.own_tier,
             })
         st.dataframe(edge_rows, width="stretch", hide_index=True)
-    st.caption("Edges run upstream to downstream. Share scales inherited score, not tier; no share is exempt.")
+    if product.edges:
+        st.caption("Edges run upstream to downstream. Share scales inherited score, not tier; no share is exempt.")
 
 with geo_tab:
     st.markdown("#### Supplier geography")
-    st.caption("Region markers show supplier concentration. Curved links follow each mapped input from supplier to buyer; gold links mark the inherited-risk route.")
+    st.caption("The report material supplies Taiwan but no facility coordinates. The marker is a country-level approximation; only confirmed mapped inputs appear as links.")
     geo_points = geographic_supplier_points(entities, assessment)
     geo_links = geographic_supply_links(product, entities, assessment)
     if geo_points:
@@ -506,7 +500,8 @@ with geo_tab:
             f'<span style="width:22px;border-top:3px solid {RISK_RED};display:inline-block;margin-left:14px"></span>Inherited-risk route'
             f'</span>'
         )
-        st.markdown(flow_legend, unsafe_allow_html=True)
+        if geo_links:
+            st.markdown(flow_legend, unsafe_allow_html=True)
         arc_layer = pdk.Layer(
             "ArcLayer", data=geo_links,
             get_source_position="source_position", get_target_position="target_position",
@@ -522,7 +517,7 @@ with geo_tab:
             stroked=True, pickable=True, auto_highlight=True, opacity=0.9,
         )
         geo_deck = pdk.Deck(
-            layers=[arc_layer, marker_layer],
+            layers=([arc_layer] if geo_links else []) + [marker_layer],
             initial_view_state=pdk.ViewState(latitude=25, longitude=98, zoom=2.35, pitch=0, bearing=0),
             map_style="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
             tooltip={"html": "<b>{source_name}</b> → <b>{target_name}</b><br/>{input} · {share_label}<br/>On inherited-risk route: {on_risk_path}<hr/><b>{location}</b><br/>Highest own tier: {own_tier}<br/>Highest effective tier: {effective_tier}<br/>Mapped suppliers ({count}):<br/>{supplier_names}",
