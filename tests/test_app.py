@@ -33,10 +33,20 @@ def test_product_selector_uses_seven_report_products_and_existing_tabs():
     ]
     assert any("REPORT-ATTRIBUTED CASE MATERIAL" in item.value for item in app.warning)
     assert not app.exception
-
     for option in product_selector.options:
         next(item for item in app.selectbox if item.label == "Product").select(option).run()
         assert not app.exception
+
+
+def test_branded_header_has_logo_and_investigation_heading():
+    app_path = Path(__file__).resolve().parents[1] / "app.py"
+    app = AppTest.from_file(str(app_path), default_timeout=20).run()
+    header = next(item.value for item in app.markdown
+                  if "Recruitment Debt in Taiwan's Supply Chains" in item.value)
+    assert "SourceSight" in header
+    assert "Recruitment Debt in Taiwan's Supply Chains" in header
+    assert "viewBox=\"0 0 48 48\"" in header
+    assert not app.exception
 
 
 def test_possible_buyers_are_not_rendered_as_confirmed_supply_edges():

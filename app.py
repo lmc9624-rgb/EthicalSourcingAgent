@@ -75,16 +75,16 @@ st.markdown("""
 :root {
     --ink: #f5f5f7;
     --muted: #d8d9df;
-    --paper: #09090c;
-    --surface: #16161b;
-    --line: #354c5c;
+    --paper: #071A2B;
+    --surface: #10263A;
+    --line: #31516B;
     --forest: #9e5b68;
     --teal: #607a96;
     --copper: #c7666d;
 }
 .stApp, [data-testid="stAppViewContainer"] { background: var(--paper); color: var(--ink); font-family: 'DM Sans', 'Avenir Next', sans-serif; font-size: 1rem; }
-[data-testid="stHeader"] { background: rgba(9,9,12,.97); }
-[data-testid="stSidebar"] { background: #111115; border-right: 1px solid var(--line); }
+[data-testid="stHeader"] { background: rgba(7,26,43,.97); }
+[data-testid="stSidebar"] { background: #091D30; border-right: 1px solid var(--line); }
 [data-testid="stSidebar"] * { color: #f5f5f7; }
 [data-testid="stSidebar"] [data-baseweb="select"] *, [data-baseweb="popover"] * { color: #f5f5f7; }
 [data-baseweb="popover"] [role="option"],
@@ -119,12 +119,24 @@ h1 { font-size: 2.35rem; font-weight: 700; }
 [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"] *,
 [data-testid="stFileUploader"] button,
 [data-testid="stFileUploader"] small { color: #111318 !important; }
+[data-testid="stFileUploader"] [data-testid="stWidgetLabel"],
+[data-testid="stFileUploader"] [data-testid="stWidgetLabel"] * { color: #FFFFFF !important; }
 [data-testid="stExpander"] { background: #15151a; border-color: var(--line); }
 .stButton button, [data-testid="stDownloadButton"] button { background: #354c5c; color: #fff; border-color: #607a96; }
 .eyebrow { color: var(--copper); font: 500 .76rem 'DM Mono', monospace; text-transform: uppercase; }
+.brand-lockup { display: flex; align-items: center; gap: 12px; margin: 2px 0 18px; }
+.brand-mark { width: 42px; height: 42px; flex: 0 0 42px; }
+.brand-wordmark { color: #FFFFFF; font: 700 1.18rem 'DM Sans', 'Avenir Next', sans-serif; line-height: 1.1; }
+.brand-kicker { color: #B9D3FF; font: 500 .72rem 'DM Mono', monospace; margin-top: 4px; }
+.page-heading { color: #FFFFFF; font: 700 2rem 'DM Sans', 'Avenir Next', sans-serif; line-height: 1.2; margin: 0 0 7px; overflow-wrap: anywhere; }
+.page-deck { color: #D8E2EE; font-size: 1rem; line-height: 1.55; margin: 0 0 14px; max-width: 850px; }
 @media (max-width: 700px) {
     .block-container { padding: 3.5rem 1rem 2rem; }
-  h1 { font-size: 1.8rem; }
+    h1 { font-size: 1.8rem; }
+    .brand-lockup { margin-bottom: 14px; }
+    .brand-mark { width: 36px; height: 36px; flex-basis: 36px; }
+    .brand-wordmark { font-size: 1.08rem; }
+    .page-heading { font-size: 1.55rem; }
     [data-testid="stMarkdownContainer"] p,
     [data-testid="stMarkdownContainer"] li,
     [data-testid="stMarkdownContainer"] label { font-size: .98rem; line-height: 1.58; }
@@ -213,7 +225,7 @@ def supply_network_chart(product, entities, assessment):
         x=alt.X("x:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
         y=alt.Y("y:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
     )
-    points = nodes.mark_circle(size=360, stroke="#16161b", strokeWidth=2).encode(
+    points = nodes.mark_circle(size=360, stroke="#10263A", strokeWidth=2).encode(
         x=alt.X("x:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
         y=alt.Y("y:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
         color=alt.Color("tier:N", scale=alt.Scale(domain=list(TIER_COLORS), range=list(TIER_COLORS.values())),
@@ -231,8 +243,8 @@ def supply_network_chart(product, entities, assessment):
     chart = alt.layer(links, halos, points, labels).properties(
         height=max(360, 74 * max((len(items) for items in layers.values()), default=1)),
         padding={"left": 20, "right": 24, "top": 14, "bottom": 18},
-    ).configure_view(stroke=None, fill="#16161b").configure(
-        background="#16161b", autosize={"type": "fit", "contains": "padding"},
+    ).configure_view(stroke=None, fill="#10263A").configure(
+        background="#071A2B", autosize={"type": "fit", "contains": "padding"},
     ).configure_axis(gridColor="#354c5c", labelColor="#c2c0c6", titleColor="#f5f5f7",
                      domainColor="#607a96").configure_legend(labelColor="#f5f5f7", titleColor="#f5f5f7")
     return chart
@@ -659,8 +671,8 @@ def render_case_study():
                 text="buyer_label:N",
             )
             st.altair_chart(alt.layer(links, points, left_labels, right_labels).properties(
-                height=max(190, 42 * len(rows))).configure_view(stroke=None, fill="#16161b").configure(
-                    background="#09090c"), use_container_width=True, theme=None)
+                height=max(190, 42 * len(rows))).configure_view(stroke=None, fill="#10263A").configure(
+                    background="#071A2B"), use_container_width=True, theme=None)
             st.dataframe([{"Company": item["company"], "Supply-chain position": item["tier_position"],
                            "Report wording status": item["status"]} for item in buyer_relationships],
                          width="stretch", hide_index=True)
@@ -704,9 +716,24 @@ def load_source():
     return CaseStudySource()
 
 
-st.markdown('<div class="eyebrow">Report-attributed investigation / Transparentem 2026</div>', unsafe_allow_html=True)
-st.title("SourceSight")
-st.caption("Select a reported Taiwan product to review worker evidence, scoring, and possible buyer connections.")
+st.markdown("""
+<div class="brand-lockup">
+    <svg class="brand-mark" viewBox="0 0 48 48" role="img" aria-label="SourceSight mark">
+        <path d="M5 24c5.2-8.4 11.5-12.6 19-12.6S37.8 15.6 43 24c-5.2 8.4-11.5 12.6-19 12.6S10.2 32.4 5 24Z" fill="none" stroke="#B9D3FF" stroke-width="2.5"/>
+        <circle cx="24" cy="24" r="6.5" fill="#F0A15D"/>
+        <path d="M24 17.5V8M18.4 27.2l-7 5M29.6 27.2l7 5" fill="none" stroke="#65C29A" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="24" cy="7" r="2.5" fill="#65C29A"/>
+        <circle cx="10" cy="33" r="2.5" fill="#65C29A"/>
+        <circle cx="38" cy="33" r="2.5" fill="#65C29A"/>
+    </svg>
+    <div>
+        <div class="brand-wordmark">SourceSight</div>
+        <div class="brand-kicker">SUPPLY-CHAIN HUMAN RIGHTS MONITOR</div>
+    </div>
+</div>
+<div class="page-heading">Recruitment Debt in Taiwan's Supply Chains</div>
+<div class="page-deck">Explore worker-reported recruitment fees, investigated manufacturers, and report-named supply-chain connections.</div>
+""", unsafe_allow_html=True)
 st.warning(
     "REPORT-ATTRIBUTED CASE MATERIAL. The report details were supplied by the user and have not been independently verified by SourceSight. "
     "Possible buyers are unconfirmed and are not treated as supply-chain edges. Scores are review aids, not findings that forced labor occurred."
@@ -883,8 +910,8 @@ with map_tab:
             color=alt.Color("Tier:N", scale=alt.Scale(domain=list(TIER_COLORS), range=list(TIER_COLORS.values())),
                             legend=None),
             tooltip=[alt.Tooltip("Tier:N"), alt.Tooltip("Suppliers:Q")],
-        ).properties(height=125).configure_view(stroke=None, fill="#16161b").configure(
-            background="#09090c").configure_axis(
+        ).properties(height=125).configure_view(stroke=None, fill="#10263A").configure(
+            background="#071A2B").configure_axis(
                 gridColor="#354c5c", labelColor="#c2c0c6", titleColor="#f5f5f7", domainColor="#607a96")
         st.altair_chart(tier_chart, use_container_width=True, theme=None)
 
@@ -990,8 +1017,8 @@ with geo_tab:
             alt.Tooltip("fee_high_usd:Q", title="Fee high (USD)", format="$,.0f"),
             alt.Tooltip("debt_evidence:N", title="Report-described debt evidence"),
         ],
-    ).properties(height=235).configure_view(stroke=None, fill="#16161b").configure(
-        background="#09090c").configure_axis(
+    ).properties(height=235).configure_view(stroke=None, fill="#10263A").configure(
+        background="#071A2B").configure_axis(
             gridColor="#354c5c", labelColor="#c2c0c6", titleColor="#f5f5f7", domainColor="#607a96")
     st.altair_chart(debt_chart, use_container_width=True, theme=None)
     st.dataframe([{
@@ -1038,8 +1065,8 @@ with evidence_tab:
         y=alt.Y("Pillar:N", title=None, sort=list(result.pillar_scores.keys())),
         color=alt.Color("Color:N", scale=None, legend=None),
         tooltip=[alt.Tooltip("Pillar:N"), alt.Tooltip("Score:Q", format=".0%")],
-    ).properties(height=180).configure_view(stroke=None, fill="#16161b").configure(
-        background="#09090c").configure_axis(
+    ).properties(height=180).configure_view(stroke=None, fill="#10263A").configure(
+        background="#071A2B").configure_axis(
             gridColor="#354c5c", labelColor="#c2c0c6", titleColor="#f5f5f7", domainColor="#607a96")
     st.altair_chart(pillar_bars, use_container_width=True, theme=None)
     st.caption("Scores range from 0 to 1. Convergence threshold: 0.40 for the four non-transparency pillars.")
