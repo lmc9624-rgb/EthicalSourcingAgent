@@ -17,6 +17,8 @@ TIER_COLORS = {
     "Elevated": "#F0A15D",
     "High": "#F07878",
 }
+FLOW_CYAN = "#62C6D0"
+RISK_GOLD = "#F4C86A"
 COUNTRY_CENTROIDS = {
     "CN": (35.9, 104.2), "IN": (20.6, 78.9), "VN": (16.0, 106.0),
     "MY": (4.2, 102.0), "TH": (15.8, 101.0),
@@ -48,9 +50,9 @@ st.markdown("""
     --paper: #101817;
     --surface: #192321;
     --line: #34443e;
-    --forest: #8fd0b0;
-    --teal: #65c29a;
-    --copper: #f0a15d;
+    --forest: #85dce0;
+    --teal: #62c6d0;
+    --copper: #f4c86a;
 }
 .stApp, [data-testid="stAppViewContainer"] { background: var(--paper); color: var(--ink); font-family: 'DM Sans', 'Avenir Next', sans-serif; }
 [data-testid="stHeader"] { background: rgba(16,24,23,.96); }
@@ -218,6 +220,38 @@ def geographic_supplier_points(entities, assessment):
     return points
 
 
+def geographic_supply_links(product, entities, assessment):
+    """Create map arcs for each supplier-to-buyer input relationship."""
+    risk_edges = set(zip(assessment.risk_path, assessment.risk_path[1:]))
+    links = []
+    for edge in product.edges:
+        source_entity = entities[edge.source]
+        target_entity = entities[edge.target]
+        source_position = REGION_CENTROIDS.get((source_entity.country, source_entity.region))
+        source_position = source_position or COUNTRY_CENTROIDS.get(source_entity.country)
+        target_position = REGION_CENTROIDS.get((target_entity.country, target_entity.region))
+        target_position = target_position or COUNTRY_CENTROIDS.get(target_entity.country)
+        if source_position is None or target_position is None:
+            continue
+
+        on_risk_path = (edge.source, edge.target) in risk_edges
+        color = RISK_GOLD if on_risk_path else FLOW_CYAN
+        color_rgb = [int(color[index:index + 2], 16) for index in (1, 3, 5)]
+        links.append({
+            "source_position": [source_position[1], source_position[0]],
+            "target_position": [target_position[1], target_position[0]],
+            "source_name": source_entity.name,
+            "target_name": target_entity.name,
+            "input": edge.input_name,
+            "share": edge.share,
+            "share_label": f"{edge.share:.0%}",
+            "on_risk_path": on_risk_path,
+            "color": color_rgb,
+            "width": 4 if on_risk_path else 2,
+        })
+    return links
+
+
 @st.cache_resource
 def load_source():
     return MockSource()
@@ -308,8 +342,9 @@ with map_tab:
 
 with geo_tab:
     st.markdown("#### Supplier geography")
-    st.caption("Map markers aggregate suppliers to approximate administrative-region centroids; marker size is supplier count and color is the highest own-risk tier in that region.")
+    st.caption("Region markers show supplier concentration. Curved links follow each mapped input from supplier to buyer; gold links mark the inherited-risk route.")
     geo_points = geographic_supplier_points(entities, assessment)
+    geo_links = geographic_supply_links(product, entities, assessment)
     if geo_points:
         legend = " ".join(
             f'<span style="display:inline-flex;align-items:center;gap:6px;margin-right:14px;">'
@@ -317,7 +352,21 @@ with geo_tab:
             f'{tier}</span>' for tier in ("Low", "Watch", "Elevated", "High"))
         st.markdown(f'<div style="color:#c4d0c8;font-size:.86rem;margin-bottom:8px">Highest own tier: {legend}</div>',
                     unsafe_allow_html=True)
-        geo_layer = pdk.Layer(
+        flow_legend = (
+            f'<span style="display:inline-flex;align-items:center;gap:6px;margin:0 0 8px;color:#c4d0c8;font-size:.86rem">'
+            f'<span style="width:22px;border-top:2px solid {FLOW_CYAN};display:inline-block"></span>Mapped input flow'
+            f'<span style="width:22px;border-top:3px solid {RISK_GOLD};display:inline-block;margin-left:14px"></span>Inherited-risk route'
+            f'</span>'
+        )
+        st.markdown(flow_legend, unsafe_allow_html=True)
+        arc_layer = pdk.Layer(
+            "ArcLayer", data=geo_links,
+            get_source_position="source_position", get_target_position="target_position",
+            get_source_color="color", get_target_color="color", get_width="width",
+            width_min_pixels=1, width_max_pixels=5, get_tilt=18,
+            great_circle=True, pickable=True, auto_highlight=True, opacity=0.82,
+        )
+        marker_layer = pdk.Layer(
             "ScatterplotLayer", data=geo_points,
             get_position="[longitude, latitude]", get_fill_color="color",
             get_line_color=[229, 238, 232, 210], get_radius="radius",
@@ -325,10 +374,10 @@ with geo_tab:
             stroked=True, pickable=True, auto_highlight=True, opacity=0.9,
         )
         geo_deck = pdk.Deck(
-            layers=[geo_layer],
-            initial_view_state=pdk.ViewState(latitude=25, longitude=91, zoom=2.25, pitch=0, bearing=0),
+            layers=[arc_layer, marker_layer],
+            initial_view_state=pdk.ViewState(latitude=25, longitude=98, zoom=2.35, pitch=0, bearing=0),
             map_style="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
-            tooltip={"html": "<b>{location}</b><br/>Highest own tier: {own_tier}<br/>Highest effective tier: {effective_tier}<br/>Mapped suppliers ({count}):<br/>{supplier_names}",
+            tooltip={"html": "<b>{source_name}</b> → <b>{target_name}</b><br/>{input} · {share_label}<br/>On inherited-risk route: {on_risk_path}<hr/><b>{location}</b><br/>Highest own tier: {own_tier}<br/>Highest effective tier: {effective_tier}<br/>Mapped suppliers ({count}):<br/>{supplier_names}",
                      "style": {"backgroundColor": "#182320", "color": "#e8eee9", "border": "1px solid #52635a"}},
         )
         st.pydeck_chart(geo_deck, use_container_width=True, height=520, key="supplier_geography")
