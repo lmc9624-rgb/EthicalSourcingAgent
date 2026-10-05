@@ -6,7 +6,10 @@ import pytest
 
 from sourcesight.data import DATA_PATH, MockSource
 from sourcesight.engine import _tier, assess_product
-from sourcesight.case_study import COMPANIES, REPORT, CaseStudySource, company_by_id
+from sourcesight.case_study import (
+    COMPANIES, REPORT, CaseStudySource, case_geographic_context, company_by_id,
+    report_relationships,
+)
 from sourcesight.signals import detect_signals
 from sourcesight.validation import DataValidationError, validate_data
 
@@ -275,7 +278,7 @@ def test_case_assessments_are_standalone_and_never_high_without_list_lookup():
 def test_possible_buyer_names_are_not_confirmed_entities_or_propagation_edges():
     source = CaseStudySource()
     products = source.products()
-    buyer_names = {buyer for company in COMPANIES for buyer in company["buyers"]}
+    buyer_names = {buyer.split(" (", 1)[0] for company in COMPANIES for buyer in company["buyers"]}
     assert all(not product.edges for product in products)
     # Garmin is both a manufacturer profile and a report-named former buyer.
     assert buyer_names.intersection(entity.name for entity in source.entities().values()) == {"Garmin"}
@@ -291,3 +294,38 @@ def test_nonresponse_does_not_change_reliability_or_claim_kind():
             worker_signal = next(signal for signal in assessment.signals if signal.pillar == "worker")
             assert worker_signal.claim_kind == "LEAD"
             assert "medium" in worker_signal.detail
+
+
+def test_geographic_context_keeps_worker_routes_and_possible_buyers_separate():
+    centroids = {
+        "TW": (23.7, 120.96), "VN": (16.0, 106.0), "TH": (15.8, 101.0), "PH": (12.9, 121.8),
+        "US": (37.1, -95.7), "HK": (22.3, 114.2), "FR": (46.2, 2.2), "JP": (36.2, 138.3),
+        "KR": (36.4, 127.8), "CA": (56.1, -106.3),
+    }
+    manufacturers = [company for company in COMPANIES if not company.get("agency_profile")]
+    assert len(manufacturers) == 7
+    for company in manufacturers:
+        context = case_geographic_context(company["id"], centroids)
+        assert context["site"]["country"] == "TW"
+        assert context["worker_origins"]
+        assert context["buyer_markets"]
+        assert all("Tier 1 downstream only if confirmed" in market["position"]
+                   for market in context["buyer_markets"])
+        assert "not identified" in context["upstream_material_tiers"].lower()
+
+    compal = case_geographic_context("TSM-COMPAL", centroids)
+    assert compal["site"]["reported_locality"] == "Pingzhen, Taoyuan"
+    assert compal["worker_origins"][0]["country"] == "VN"
+    assert "not a material-supplier route" in compal["worker_routes"][0]["relationship"]
+    assert {market["country"] for market in compal["buyer_markets"]} == {"US", "HK", "TW"}
+
+
+def test_report_affiliates_have_weighted_context_not_independent_investigation_status():
+    cmc_links = report_relationships("TSM-CMC")
+    assert [(item["name"], item["association_weight"]) for item in cmc_links] == [
+        ("Mitsubishi Motors", 0.14), ("Yulon Group-linked holders", 0.34),
+    ]
+    assert all(not item["is_investigated"] for item in cmc_links)
+    garmin_recruiter = report_relationships("TSM-GARMIN")[0]
+    assert garmin_recruiter["id"] == "TSM-AGENCY"
+    assert garmin_recruiter["is_investigated"]
