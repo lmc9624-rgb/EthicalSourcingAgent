@@ -13,12 +13,12 @@ st.set_page_config(page_title="SourceSight", layout="wide")
 
 TIER_COLORS = {
     "Low": "#65C29A",
-    "Watch": "#E2C66F",
-    "Elevated": "#F0A15D",
-    "High": "#F07878",
+    "Watch": "#9E5B68",
+    "Elevated": "#607A96",
+    "High": "#C7666D",
 }
-FLOW_CYAN = "#62C6D0"
-RISK_GOLD = "#F4C86A"
+FLOW_BLUE = "#607A96"
+RISK_RED = "#C7666D"
 COUNTRY_CENTROIDS = {
     "CN": (35.9, 104.2), "IN": (20.6, 78.9), "VN": (16.0, 106.0),
     "MY": (4.2, 102.0), "TH": (15.8, 101.0),
@@ -45,21 +45,21 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
 :root {
-    --ink: #e8eee9;
-    --muted: #a7b8af;
-    --paper: #101817;
-    --surface: #192321;
-    --line: #34443e;
-    --forest: #85dce0;
-    --teal: #62c6d0;
-    --copper: #f4c86a;
+    --ink: #f5f5f7;
+    --muted: #c2c0c6;
+    --paper: #09090c;
+    --surface: #16161b;
+    --line: #354c5c;
+    --forest: #9e5b68;
+    --teal: #607a96;
+    --copper: #c7666d;
 }
 .stApp, [data-testid="stAppViewContainer"] { background: var(--paper); color: var(--ink); font-family: 'DM Sans', 'Avenir Next', sans-serif; }
-[data-testid="stHeader"] { background: rgba(16,24,23,.96); }
-[data-testid="stSidebar"] { background: #16211e; border-right: 1px solid var(--line); }
-[data-testid="stSidebar"] * { color: #e5eee8; }
-[data-testid="stSidebar"] [data-baseweb="select"] *, [data-baseweb="popover"] * { color: #e8eee9; }
-[data-baseweb="select"] > div { background: #202d29; border-color: #51645b; }
+[data-testid="stHeader"] { background: rgba(9,9,12,.97); }
+[data-testid="stSidebar"] { background: #111115; border-right: 1px solid var(--line); }
+[data-testid="stSidebar"] * { color: #f5f5f7; }
+[data-testid="stSidebar"] [data-baseweb="select"] *, [data-baseweb="popover"] * { color: #f5f5f7; }
+[data-baseweb="select"] > div { background: #202027; border-color: #607a96; }
 h1, h2, h3, h4, p, label, li { color: var(--ink); font-family: 'DM Sans', 'Avenir Next', sans-serif; letter-spacing: 0; }
 h1 { font-size: 2.35rem; font-weight: 700; }
 [data-testid="stMetric"] {
@@ -68,16 +68,16 @@ h1 { font-size: 2.35rem; font-weight: 700; }
 }
 [data-testid="stMetricLabel"] { color: var(--muted); font-size: .82rem; }
 [data-testid="stMetricValue"] { color: var(--ink); font-size: clamp(1.2rem, 2vw, 1.8rem); overflow-wrap: anywhere; }
-[data-testid="stAlert"] { border-radius: 4px; background: #302b1c; border: 1px solid #746239; color: #f4e7b8; }
-[data-testid="stAlert"] p { color: #f4e7b8; }
+[data-testid="stAlert"] { border-radius: 4px; background: #21191d; border: 1px solid #69545c; color: #f5f5f7; }
+[data-testid="stAlert"] p { color: #f5f5f7; }
 [data-testid="stTabs"] button { color: #b0c0b7; }
 [data-testid="stTabs"] button[aria-selected="true"] { color: var(--forest); border-bottom-color: var(--copper); }
 [data-testid="stDataFrame"] { border: 1px solid var(--line); border-radius: 4px; }
-[data-testid="stMarkdownContainer"] a { color: #8fcbb7; }
-[data-testid="stCaptionContainer"] { color: #a7b8af; }
-[data-testid="stSelectbox"] [data-baseweb="select"] { background: #202d29; }
-[data-testid="stExpander"] { background: #17211f; border-color: var(--line); }
-.stButton button, [data-testid="stDownloadButton"] button { background: #263a33; color: #e8eee9; border-color: #526b60; }
+[data-testid="stMarkdownContainer"] a { color: #8fa7c1; }
+[data-testid="stCaptionContainer"] { color: #c2c0c6; }
+[data-testid="stSelectbox"] [data-baseweb="select"] { background: #202027; }
+[data-testid="stExpander"] { background: #15151a; border-color: var(--line); }
+.stButton button, [data-testid="stDownloadButton"] button { background: #354c5c; color: #fff; border-color: #607a96; }
 .eyebrow { color: var(--copper); font: 500 .76rem 'DM Mono', monospace; text-transform: uppercase; }
 @media (max-width: 700px) {
   .block-container { padding: 4.2rem 1rem 2rem; }
@@ -158,15 +158,15 @@ def supply_network_chart(product, entities, assessment):
                  alt.Tooltip("input:N", title="Input"), alt.Tooltip("share:Q", title="Input share", format=".0%")],
     )
     links = base.mark_rule(strokeWidth=2).encode(
-        color=alt.condition("datum.on_path", alt.value("#f0a15d"), alt.value("#82958b")),
+        color=alt.condition("datum.on_path", alt.value(RISK_RED), alt.value(FLOW_BLUE)),
         strokeDash=alt.condition("datum.on_path", alt.value([1, 0]), alt.value([5, 4])),
     )
     nodes = alt.Chart(alt.Data(values=node_rows))
-    halos = nodes.transform_filter("datum.path").mark_circle(size=620, filled=False, stroke="#f0a15d", strokeWidth=2).encode(
+    halos = nodes.transform_filter("datum.path").mark_circle(size=620, filled=False, stroke=RISK_RED, strokeWidth=2).encode(
         x=alt.X("x:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
         y=alt.Y("y:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
     )
-    points = nodes.mark_circle(size=360, stroke="#192321", strokeWidth=2).encode(
+    points = nodes.mark_circle(size=360, stroke="#16161b", strokeWidth=2).encode(
         x=alt.X("x:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
         y=alt.Y("y:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
         color=alt.Color("tier:N", scale=alt.Scale(domain=list(TIER_COLORS), range=list(TIER_COLORS.values())),
@@ -176,7 +176,7 @@ def supply_network_chart(product, entities, assessment):
                  alt.Tooltip("effective_tier:N", title="Effective tier"),
                  alt.Tooltip("score:Q", title="Evidence score", format=".2f")],
     )
-    labels = nodes.mark_text(dy=23, font="DM Sans", fontSize=11, fontWeight=500, color="#dce7df").encode(
+    labels = nodes.mark_text(dy=23, font="DM Sans", fontSize=11, fontWeight=500, color="#f5f5f7").encode(
         x=alt.X("x:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
         y=alt.Y("y:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
         text=alt.Text("label:N"),
@@ -184,10 +184,10 @@ def supply_network_chart(product, entities, assessment):
     chart = alt.layer(links, halos, points, labels).properties(
         height=max(360, 74 * max((len(items) for items in layers.values()), default=1)),
         padding={"left": 20, "right": 24, "top": 14, "bottom": 18},
-    ).configure_view(stroke=None, fill="#192321").configure(
-        background="#192321", autosize={"type": "fit", "contains": "padding"},
-    ).configure_axis(gridColor="#34443e", labelColor="#bdc9c1", titleColor="#dce7df",
-                     domainColor="#506259").configure_legend(labelColor="#dce7df", titleColor="#e8eee9")
+    ).configure_view(stroke=None, fill="#16161b").configure(
+        background="#16161b", autosize={"type": "fit", "contains": "padding"},
+    ).configure_axis(gridColor="#354c5c", labelColor="#c2c0c6", titleColor="#f5f5f7",
+                     domainColor="#607a96").configure_legend(labelColor="#f5f5f7", titleColor="#f5f5f7")
     return chart
 
 
@@ -235,7 +235,7 @@ def geographic_supply_links(product, entities, assessment):
             continue
 
         on_risk_path = (edge.source, edge.target) in risk_edges
-        color = RISK_GOLD if on_risk_path else FLOW_CYAN
+        color = RISK_RED if on_risk_path else FLOW_BLUE
         color_rgb = [int(color[index:index + 2], 16) for index in (1, 3, 5)]
         links.append({
             "source_position": [source_position[1], source_position[0]],
@@ -317,9 +317,9 @@ with map_tab:
             color=alt.Color("Tier:N", scale=alt.Scale(domain=list(TIER_COLORS), range=list(TIER_COLORS.values())),
                             legend=None),
             tooltip=[alt.Tooltip("Tier:N"), alt.Tooltip("Suppliers:Q")],
-        ).properties(height=125).configure_view(stroke=None, fill="#192321").configure(
-            background="#192321").configure_axis(
-                gridColor="#34443e", labelColor="#bdc9c1", titleColor="#dce7df", domainColor="#506259")
+        ).properties(height=125).configure_view(stroke=None, fill="#16161b").configure(
+            background="#09090c").configure_axis(
+                gridColor="#354c5c", labelColor="#c2c0c6", titleColor="#f5f5f7", domainColor="#607a96")
         st.altair_chart(tier_chart, use_container_width=True, theme=None)
 
     with st.expander("Inspect exact supplier routes"):
@@ -354,8 +354,8 @@ with geo_tab:
                     unsafe_allow_html=True)
         flow_legend = (
             f'<span style="display:inline-flex;align-items:center;gap:6px;margin:0 0 8px;color:#c4d0c8;font-size:.86rem">'
-            f'<span style="width:22px;border-top:2px solid {FLOW_CYAN};display:inline-block"></span>Mapped input flow'
-            f'<span style="width:22px;border-top:3px solid {RISK_GOLD};display:inline-block;margin-left:14px"></span>Inherited-risk route'
+            f'<span style="width:22px;border-top:2px solid {FLOW_BLUE};display:inline-block"></span>Mapped input flow'
+            f'<span style="width:22px;border-top:3px solid {RISK_RED};display:inline-block;margin-left:14px"></span>Inherited-risk route'
             f'</span>'
         )
         st.markdown(flow_legend, unsafe_allow_html=True)
@@ -413,8 +413,8 @@ with evidence_tab:
     if result.inherited_tier:
         st.caption("Inherited path: " + " -> ".join(entities[item].name for item in result.risk_path))
     st.markdown("**Risk evidence by pillar**")
-    pillar_palette = {"exposure": "#65c29a", "linkage": "#72afd1", "trade": "#f0a15d",
-                      "worker": "#f07878", "transparency": "#e2c66f"}
+    pillar_palette = {"exposure": "#69545C", "linkage": "#9E5B68", "trade": "#C7666D",
+                      "worker": "#607A96", "transparency": "#354C5C"}
     pillar_rows = [{"Pillar": pillar.title(), "Score": score, "Color": pillar_palette[pillar]}
                    for pillar, score in result.pillar_scores.items()]
     pillar_bars = alt.Chart(alt.Data(values=pillar_rows)).mark_bar(size=19, cornerRadiusEnd=3).encode(
@@ -423,9 +423,9 @@ with evidence_tab:
         y=alt.Y("Pillar:N", title=None, sort=list(result.pillar_scores.keys())),
         color=alt.Color("Color:N", scale=None, legend=None),
         tooltip=[alt.Tooltip("Pillar:N"), alt.Tooltip("Score:Q", format=".0%")],
-    ).properties(height=180).configure_view(stroke=None, fill="#192321").configure(
-        background="#192321").configure_axis(
-            gridColor="#34443e", labelColor="#bdc9c1", titleColor="#dce7df", domainColor="#506259")
+    ).properties(height=180).configure_view(stroke=None, fill="#16161b").configure(
+        background="#09090c").configure_axis(
+            gridColor="#354c5c", labelColor="#c2c0c6", titleColor="#f5f5f7", domainColor="#607a96")
     st.altair_chart(pillar_bars, use_container_width=True, theme=None)
     st.caption("Scores range from 0 to 1. Convergence threshold: 0.40 for the four non-transparency pillars.")
     st.markdown("**Reported ILO indicators**")

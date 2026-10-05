@@ -32,8 +32,8 @@ The test suite runs offline and checks the three fictional cases, fixture integr
 - Explainable exposure, listed-entity/network linkage, capacity and enforcement-timed trade volume/route-mix patterns, worker-indicator, and transparency signals with source IDs and FACT/INFERENCE/LEAD labels. Route changes are flagged as observable temporal patterns, not evidence of intentional diversion.
 - Noisy-OR aggregation, independent convergence, illustrative tiers, separate evidence confidence, and share-scaled downstream risk paths.
 - Interactive upstream-to-product supplier network with tier-colored nodes, hover details, and a highlighted inherited-risk route; exact route records remain available on demand.
-- Dark, high-contrast reading theme with complementary cyan/gold secondary accents while preserving green Low and red High risk signals.
-- Geographic view aggregates fictional suppliers at approximate region centroids and draws curved supplier-to-buyer input links. Cyan marks mapped flows, gold marks the inherited-risk route, and marker color shows the highest own-risk tier; locations are not facility coordinates.
+- Dark, high-contrast reading theme using the mauve, rose, coral, and steel-blue palette with black/white surfaces and text; green Low and red High risk signals remain distinct.
+- Geographic view aggregates fictional suppliers at approximate region centroids and draws curved supplier-to-buyer input links. Steel blue marks mapped flows, coral red marks the inherited-risk route, and marker color shows the highest own-risk tier; locations are not facility coordinates.
 - Supplier tier distribution and comparative evidence-pillar charts, plus responsive two-column summary metrics on mobile.
 - Risk-ordered supplier selection, provenance, ILO indicator display, and a user-readable scoring explanation.
 - Focused offline tests for the hoodie, solar, and tuna acceptance behaviors and validation/propagation edge cases.
