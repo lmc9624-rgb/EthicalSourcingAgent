@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import altair as alt
+from collections import defaultdict
+import pydeck as pdk
 import streamlit as st
 
 from sourcesight.data import MockSource
@@ -10,44 +12,71 @@ from sourcesight.engine import TIER_ORDER, assess_product
 st.set_page_config(page_title="SourceSight", layout="wide")
 
 TIER_COLORS = {
-    "Low": "#3F806B",
-    "Watch": "#C28D32",
-    "Elevated": "#D66A45",
-    "High": "#A43D3D",
+    "Low": "#65C29A",
+    "Watch": "#E2C66F",
+    "Elevated": "#F0A15D",
+    "High": "#F07878",
+}
+COUNTRY_CENTROIDS = {
+    "CN": (35.9, 104.2), "IN": (20.6, 78.9), "VN": (16.0, 106.0),
+    "MY": (4.2, 102.0), "TH": (15.8, 101.0),
+}
+REGION_CENTROIDS = {
+    ("CN", "Xinjiang"): (42.0, 85.0),
+    ("CN", "Ningxia"): (37.3, 106.2),
+    ("CN", "Inner Mongolia"): (43.4, 112.0),
+    ("CN", "Jiangsu"): (32.9, 119.5),
+    ("IN", "Maharashtra"): (19.7, 75.7),
+    ("IN", "Gujarat"): (22.3, 72.6),
+    ("IN", "Tamil Nadu"): (11.1, 78.7),
+    ("VN", "Dong Nai"): (11.1, 107.2),
+    ("VN", "Binh Duong"): (11.2, 106.7),
+    ("MY", "Selangor"): (3.1, 101.5),
+    ("MY", "Penang"): (5.4, 100.3),
+    ("TH", "Chonburi"): (13.3, 101.0),
+    ("TH", "Rayong"): (12.7, 101.3),
+    ("TH", "Trat"): (12.2, 102.5),
+    ("TH", "Phuket"): (7.9, 98.3),
 }
 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
 :root {
-  --ink: #1d302d;
-  --muted: #60716c;
-  --paper: #f4f3ed;
-  --surface: #fffefa;
-  --line: #d9ded6;
-  --forest: #204d43;
-  --teal: #397d73;
-  --copper: #c36d48;
+    --ink: #e8eee9;
+    --muted: #a7b8af;
+    --paper: #101817;
+    --surface: #192321;
+    --line: #34443e;
+    --forest: #8fd0b0;
+    --teal: #65c29a;
+    --copper: #f0a15d;
 }
-.stApp { background: var(--paper); color: var(--ink); font-family: 'DM Sans', 'Avenir Next', sans-serif; }
-[data-testid="stHeader"] { background: rgba(244,243,237,.94); }
-[data-testid="stSidebar"] { background: #203f38; }
-[data-testid="stSidebar"] * { color: #f4f3ed; }
-[data-testid="stSidebar"] [data-baseweb="select"] * { color: var(--ink); }
-h1, h2, h3 { color: var(--ink); font-family: 'DM Sans', 'Avenir Next', sans-serif; letter-spacing: 0; }
+.stApp, [data-testid="stAppViewContainer"] { background: var(--paper); color: var(--ink); font-family: 'DM Sans', 'Avenir Next', sans-serif; }
+[data-testid="stHeader"] { background: rgba(16,24,23,.96); }
+[data-testid="stSidebar"] { background: #16211e; border-right: 1px solid var(--line); }
+[data-testid="stSidebar"] * { color: #e5eee8; }
+[data-testid="stSidebar"] [data-baseweb="select"] *, [data-baseweb="popover"] * { color: #e8eee9; }
+[data-baseweb="select"] > div { background: #202d29; border-color: #51645b; }
+h1, h2, h3, h4, p, label, li { color: var(--ink); font-family: 'DM Sans', 'Avenir Next', sans-serif; letter-spacing: 0; }
 h1 { font-size: 2.35rem; font-weight: 700; }
 [data-testid="stMetric"] {
-  background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--teal);
+    background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--teal);
   border-radius: 5px; padding: 14px 16px; min-height: 108px;
 }
 [data-testid="stMetricLabel"] { color: var(--muted); font-size: .82rem; }
 [data-testid="stMetricValue"] { color: var(--ink); font-size: clamp(1.2rem, 2vw, 1.8rem); overflow-wrap: anywhere; }
-[data-testid="stAlert"] { border-radius: 4px; }
-[data-testid="stTabs"] button { color: var(--muted); }
+[data-testid="stAlert"] { border-radius: 4px; background: #302b1c; border: 1px solid #746239; color: #f4e7b8; }
+[data-testid="stAlert"] p { color: #f4e7b8; }
+[data-testid="stTabs"] button { color: #b0c0b7; }
 [data-testid="stTabs"] button[aria-selected="true"] { color: var(--forest); border-bottom-color: var(--copper); }
 [data-testid="stDataFrame"] { border: 1px solid var(--line); border-radius: 4px; }
+[data-testid="stMarkdownContainer"] a { color: #8fcbb7; }
+[data-testid="stCaptionContainer"] { color: #a7b8af; }
+[data-testid="stSelectbox"] [data-baseweb="select"] { background: #202d29; }
+[data-testid="stExpander"] { background: #17211f; border-color: var(--line); }
+.stButton button, [data-testid="stDownloadButton"] button { background: #263a33; color: #e8eee9; border-color: #526b60; }
 .eyebrow { color: var(--copper); font: 500 .76rem 'DM Mono', monospace; text-transform: uppercase; }
-.chart-note { color: var(--muted); font-size: .86rem; }
 @media (max-width: 700px) {
   .block-container { padding: 4.2rem 1rem 2rem; }
   h1 { font-size: 1.8rem; }
@@ -127,15 +156,15 @@ def supply_network_chart(product, entities, assessment):
                  alt.Tooltip("input:N", title="Input"), alt.Tooltip("share:Q", title="Input share", format=".0%")],
     )
     links = base.mark_rule(strokeWidth=2).encode(
-        color=alt.condition("datum.on_path", alt.value("#c36d48"), alt.value("#b8c3bb")),
+        color=alt.condition("datum.on_path", alt.value("#f0a15d"), alt.value("#82958b")),
         strokeDash=alt.condition("datum.on_path", alt.value([1, 0]), alt.value([5, 4])),
     )
     nodes = alt.Chart(alt.Data(values=node_rows))
-    halos = nodes.transform_filter("datum.path").mark_circle(size=620, filled=False, stroke="#c36d48", strokeWidth=2).encode(
+    halos = nodes.transform_filter("datum.path").mark_circle(size=620, filled=False, stroke="#f0a15d", strokeWidth=2).encode(
         x=alt.X("x:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
         y=alt.Y("y:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
     )
-    points = nodes.mark_circle(size=360, stroke="#fffefa", strokeWidth=2).encode(
+    points = nodes.mark_circle(size=360, stroke="#192321", strokeWidth=2).encode(
         x=alt.X("x:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
         y=alt.Y("y:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
         color=alt.Color("tier:N", scale=alt.Scale(domain=list(TIER_COLORS), range=list(TIER_COLORS.values())),
@@ -145,7 +174,7 @@ def supply_network_chart(product, entities, assessment):
                  alt.Tooltip("effective_tier:N", title="Effective tier"),
                  alt.Tooltip("score:Q", title="Evidence score", format=".2f")],
     )
-    labels = nodes.mark_text(dy=23, font="DM Sans", fontSize=11, fontWeight=500, color="#354943").encode(
+    labels = nodes.mark_text(dy=23, font="DM Sans", fontSize=11, fontWeight=500, color="#dce7df").encode(
         x=alt.X("x:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
         y=alt.Y("y:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
         text=alt.Text("label:N"),
@@ -153,8 +182,40 @@ def supply_network_chart(product, entities, assessment):
     chart = alt.layer(links, halos, points, labels).properties(
         height=max(360, 74 * max((len(items) for items in layers.values()), default=1)),
         padding={"left": 20, "right": 24, "top": 14, "bottom": 18},
-    ).configure_view(stroke=None).configure(autosize={"type": "fit", "contains": "padding"})
+    ).configure_view(stroke=None, fill="#192321").configure(
+        background="#192321", autosize={"type": "fit", "contains": "padding"},
+    ).configure_axis(gridColor="#34443e", labelColor="#bdc9c1", titleColor="#dce7df",
+                     domainColor="#506259").configure_legend(labelColor="#dce7df", titleColor="#e8eee9")
     return chart
+
+
+def geographic_supplier_points(entities, assessment):
+    """Aggregate fictional suppliers at approximate region or country centroids."""
+    groups = defaultdict(list)
+    for entity_id, result in assessment.suppliers.items():
+        entity = entities[entity_id]
+        coordinate = REGION_CENTROIDS.get((entity.country, entity.region))
+        coordinate = coordinate or COUNTRY_CENTROIDS.get(entity.country)
+        if coordinate is None:
+            continue
+        groups[(entity.country, entity.region or "Country level")].append((entity, result))
+
+    points = []
+    for (country, region), suppliers in groups.items():
+        highest_tier = max((result.own_tier for _, result in suppliers), key=TIER_ORDER.get)
+        latitude, longitude = REGION_CENTROIDS.get((country, region)) or COUNTRY_CENTROIDS[country]
+        hex_color = TIER_COLORS[highest_tier].lstrip("#")
+        color = [int(hex_color[index:index + 2], 16) for index in (0, 2, 4)] + [225]
+        points.append({
+            "latitude": latitude, "longitude": longitude,
+            "location": f"{region}, {country}" if region != "Country level" else country,
+            "count": len(suppliers), "radius": 22000 + 10000 * min(len(suppliers) - 1, 4),
+            "own_tier": highest_tier, "effective_tier": max(
+                (result.effective_tier for _, result in suppliers), key=TIER_ORDER.get),
+            "supplier_names": "<br/>".join(f"{entity.name} ({entity.id})" for entity, _ in suppliers),
+            "color": color,
+        })
+    return points
 
 
 @st.cache_resource
@@ -198,7 +259,8 @@ if assessment.risk_path:
 else:
     st.info("No non-Low own-risk source is present on the mapped product path in the available fixture data.")
 
-map_tab, evidence_tab, scoring_tab = st.tabs(["Supply map", "Supplier evidence", "How scoring works"])
+map_tab, geo_tab, evidence_tab, scoring_tab = st.tabs(
+    ["Supply map", "Geographic view", "Supplier evidence", "How scoring works"])
 
 with map_tab:
     st.markdown("#### Supplier network")
@@ -221,7 +283,9 @@ with map_tab:
             color=alt.Color("Tier:N", scale=alt.Scale(domain=list(TIER_COLORS), range=list(TIER_COLORS.values())),
                             legend=None),
             tooltip=[alt.Tooltip("Tier:N"), alt.Tooltip("Suppliers:Q")],
-        ).properties(height=125).configure_view(stroke=None)
+        ).properties(height=125).configure_view(stroke=None, fill="#192321").configure(
+            background="#192321").configure_axis(
+                gridColor="#34443e", labelColor="#bdc9c1", titleColor="#dce7df", domainColor="#506259")
         st.altair_chart(tier_chart, use_container_width=True, theme=None)
 
     with st.expander("Inspect exact supplier routes"):
@@ -241,6 +305,42 @@ with map_tab:
             })
         st.dataframe(edge_rows, width="stretch", hide_index=True)
     st.caption("Edges run upstream to downstream. Share scales inherited score, not tier; no share is exempt.")
+
+with geo_tab:
+    st.markdown("#### Supplier geography")
+    st.caption("Map markers aggregate suppliers to approximate administrative-region centroids; marker size is supplier count and color is the highest own-risk tier in that region.")
+    geo_points = geographic_supplier_points(entities, assessment)
+    if geo_points:
+        legend = " ".join(
+            f'<span style="display:inline-flex;align-items:center;gap:6px;margin-right:14px;">'
+            f'<span style="width:10px;height:10px;border-radius:50%;background:{TIER_COLORS[tier]};display:inline-block"></span>'
+            f'{tier}</span>' for tier in ("Low", "Watch", "Elevated", "High"))
+        st.markdown(f'<div style="color:#c4d0c8;font-size:.86rem;margin-bottom:8px">Highest own tier: {legend}</div>',
+                    unsafe_allow_html=True)
+        geo_layer = pdk.Layer(
+            "ScatterplotLayer", data=geo_points,
+            get_position="[longitude, latitude]", get_fill_color="color",
+            get_line_color=[229, 238, 232, 210], get_radius="radius",
+            radius_min_pixels=9, radius_max_pixels=26, line_width_min_pixels=1,
+            stroked=True, pickable=True, auto_highlight=True, opacity=0.9,
+        )
+        geo_deck = pdk.Deck(
+            layers=[geo_layer],
+            initial_view_state=pdk.ViewState(latitude=25, longitude=91, zoom=2.25, pitch=0, bearing=0),
+            map_style="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+            tooltip={"html": "<b>{location}</b><br/>Highest own tier: {own_tier}<br/>Highest effective tier: {effective_tier}<br/>Mapped suppliers ({count}):<br/>{supplier_names}",
+                     "style": {"backgroundColor": "#182320", "color": "#e8eee9", "border": "1px solid #52635a"}},
+        )
+        st.pydeck_chart(geo_deck, use_container_width=True, height=520, key="supplier_geography")
+        st.caption("Location is approximate. The fictional fixtures provide regions, not facility coordinates; markers must not be interpreted as verified sites.")
+        with st.expander("Inspect mapped regions and suppliers"):
+            st.dataframe([{
+                "Approximate area": point["location"], "Suppliers mapped": point["count"],
+                "Highest own tier": point["own_tier"], "Highest effective tier": point["effective_tier"],
+                "Suppliers": point["supplier_names"].replace("<br/>", "; "),
+            } for point in geo_points], width="stretch", hide_index=True)
+    else:
+        st.info("No mapped supplier regions are available for this product.")
 
 with evidence_tab:
     st.markdown("#### Supplier evidence")
@@ -264,8 +364,8 @@ with evidence_tab:
     if result.inherited_tier:
         st.caption("Inherited path: " + " -> ".join(entities[item].name for item in result.risk_path))
     st.markdown("**Risk evidence by pillar**")
-    pillar_palette = {"exposure": "#397d73", "linkage": "#386f91", "trade": "#c36d48",
-                      "worker": "#a43d3d", "transparency": "#9a813e"}
+    pillar_palette = {"exposure": "#65c29a", "linkage": "#72afd1", "trade": "#f0a15d",
+                      "worker": "#f07878", "transparency": "#e2c66f"}
     pillar_rows = [{"Pillar": pillar.title(), "Score": score, "Color": pillar_palette[pillar]}
                    for pillar, score in result.pillar_scores.items()]
     pillar_bars = alt.Chart(alt.Data(values=pillar_rows)).mark_bar(size=19, cornerRadiusEnd=3).encode(
@@ -274,7 +374,9 @@ with evidence_tab:
         y=alt.Y("Pillar:N", title=None, sort=list(result.pillar_scores.keys())),
         color=alt.Color("Color:N", scale=None, legend=None),
         tooltip=[alt.Tooltip("Pillar:N"), alt.Tooltip("Score:Q", format=".0%")],
-    ).properties(height=180).configure_view(stroke=None)
+    ).properties(height=180).configure_view(stroke=None, fill="#192321").configure(
+        background="#192321").configure_axis(
+            gridColor="#34443e", labelColor="#bdc9c1", titleColor="#dce7df", domainColor="#506259")
     st.altair_chart(pillar_bars, use_container_width=True, theme=None)
     st.caption("Scores range from 0 to 1. Convergence threshold: 0.40 for the four non-transparency pillars.")
     st.markdown("**Reported ILO indicators**")

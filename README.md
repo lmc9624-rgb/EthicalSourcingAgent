@@ -32,6 +32,7 @@ The test suite runs offline and checks the three fictional cases, fixture integr
 - Explainable exposure, listed-entity/network linkage, trade, worker-indicator, and transparency signals with source IDs and FACT/INFERENCE/LEAD labels.
 - Noisy-OR aggregation, independent convergence, illustrative tiers, separate evidence confidence, and share-scaled downstream risk paths.
 - Interactive upstream-to-product supplier network with tier-colored nodes, hover details, and a highlighted inherited-risk route; exact route records remain available on demand.
+- Dark, high-contrast reading theme and geographic view aggregating fictional suppliers at approximate region centroids. Map points show the highest own-risk tier and supplier count; they are not facility locations.
 - Supplier tier distribution and comparative evidence-pillar charts, plus responsive two-column summary metrics on mobile.
 - Risk-ordered supplier selection, provenance, ILO indicator display, and a user-readable scoring explanation.
 - Focused offline tests for the hoodie, solar, and tuna acceptance behaviors and validation/propagation edge cases.
@@ -39,3 +40,5 @@ The test suite runs offline and checks the three fictional cases, fixture integr
 ## Status and limitations
 
 This is the first runnable M0/M1 product slice with an initial evidence interface. It uses only the checked-in fictional JSON fixture. It does not retrieve live records, create downloadable memos, use an AI analyst, establish supplier identity, verify worker accounts, reconcile chain of custody, or provide legal conclusions. All demo thresholds, baselines, and records need expert validation before any real-world use. Risk tiers are prioritization cues only and must not be used for automated adverse action.
+
+The geographic basemap uses online CARTO tiles. Supplier markers are grouped by approximate region/country centroids from the fictional fixture and are not facility coordinates; the region summary remains available below the map.
