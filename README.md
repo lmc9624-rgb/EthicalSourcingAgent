@@ -21,7 +21,7 @@ streamlit run app.py
 
 Streamlit prints the local URL when it starts, normally <http://localhost:8501>. No API key or live-data credentials are needed. The app does not make external data requests on load.
 
-**Open the running app:** [http://localhost:8501](http://localhost:8501) after starting Streamlit locally.
+**Current local preview:** [http://localhost:8505](http://localhost:8505) (available while the SourceSight preview server is running on this machine). For a new local run, use the URL printed by Streamlit.
 
 ## Run tests
 
