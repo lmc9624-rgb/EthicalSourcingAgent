@@ -1,8 +1,8 @@
 # SourceSight
 
-## [Open the SourceSight launch page](https://lmc9624-rgb.github.io/EthicalSourcingAgent/)
+## [Open SourceSight](https://sourcesight9624.streamlit.app)
 
-GitHub Pages hosts the public launch page. The interactive Streamlit app runs separately through Streamlit Community Cloud. [View the source repository](https://github.com/lmc9624-rgb/EthicalSourcingAgent).
+The [GitHub Pages URL](https://lmc9624-rgb.github.io/EthicalSourcingAgent/) redirects to the interactive Streamlit app. [View the source repository](https://github.com/lmc9624-rgb/EthicalSourcingAgent).
 
 SourceSight is a local supply-chain risk exploration prototype. The existing Product selector now lists seven manufacturer/product profiles from user-supplied material attributed to Transparentem's Taiwan investigation. SourceSight did not independently retrieve or verify the original PDF. The original fictional hoodie, solar, and tuna records remain in offline regression tests. This is decision support for human review, not an investigative or legal determination.
 
