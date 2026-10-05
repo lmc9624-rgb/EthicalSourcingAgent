@@ -88,7 +88,11 @@ st.markdown("""
 [data-testid="stSidebar"] * { color: #f5f5f7; }
 [data-testid="stSidebar"] [data-baseweb="select"] *, [data-baseweb="popover"] * { color: #f5f5f7; }
 [data-baseweb="popover"] [role="option"],
-[data-baseweb="popover"] [role="option"] * { color: #111318 !important; }
+[data-baseweb="popover"] [role="option"] *,
+[data-baseweb="popover"] [data-baseweb="menu"],
+[data-baseweb="popover"] [data-baseweb="menu"] *,
+[data-baseweb="popover"] ul[role="listbox"],
+[data-baseweb="popover"] ul[role="listbox"] * { color: #111318 !important; }
 [data-baseweb="select"] > div { background: #202027; border-color: #607a96; }
 h1, h2, h3, h4, p, label, li { color: var(--ink); font-family: 'DM Sans', 'Avenir Next', sans-serif; letter-spacing: 0; }
 h1 { font-size: 2.35rem; font-weight: 700; }
