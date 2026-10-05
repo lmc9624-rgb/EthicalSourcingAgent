@@ -29,7 +29,7 @@ The test suite runs offline and checks the three fictional cases, fixture integr
 
 - Product selector for the hoodie, solar, and tuna demonstration supply chains.
 - Deterministic `DataSource`/`MockSource` contracts and validation of entity references, shares, evidence dates, reliability, ILO tags, and directed-acyclic supply maps.
-- Explainable exposure, listed-entity/network linkage, trade, worker-indicator, and transparency signals with source IDs and FACT/INFERENCE/LEAD labels.
+- Explainable exposure, listed-entity/network linkage, capacity and enforcement-timed trade volume/route-mix patterns, worker-indicator, and transparency signals with source IDs and FACT/INFERENCE/LEAD labels. Route changes are flagged as observable temporal patterns, not evidence of intentional diversion.
 - Noisy-OR aggregation, independent convergence, illustrative tiers, separate evidence confidence, and share-scaled downstream risk paths.
 - Interactive upstream-to-product supplier network with tier-colored nodes, hover details, and a highlighted inherited-risk route; exact route records remain available on demand.
 - Dark, high-contrast reading theme with complementary cyan/gold secondary accents while preserving green Low and red High risk signals.

@@ -41,7 +41,7 @@ Keep provenance fields attached to each evidence item: source identifier, source
 
 **Build:** Implement one detector per evidence pillar in `signals.py`: sector/geography exposure, listed-entity linkage, trade anomalies, worker indicators, and transparency. Keep each detector deterministic and return the same `Signal` structure with strength, FACT/INFERENCE/LEAD kind, detail, source IDs, and next investigative step. Centralize tunable thresholds and weights; mark mock-specific values as illustrative.
 
-Add focused tests for exact matches, fuzzy matches near the threshold, network links at one and two hops, missing trade data, short date series, no/low-reliability documents, and disclosed versus undisclosed upstream sources.
+Add focused tests for exact matches, fuzzy matches near the threshold, network links at one and two hops, missing trade data, short date series, route-mix shifts only when route observations exist, no/low-reliability documents, and disclosed versus undisclosed upstream sources.
 
 **Exit checks:** Each detector can be tested independently; missing optional evidence yields no signal rather than a crash; every emitted signal has usable provenance and a valid strength.
 

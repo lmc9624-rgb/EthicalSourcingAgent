@@ -84,12 +84,12 @@
     "S04": {
       "id": "TRADE-MOCK-S04", "monthly_capacity": 1000, "price_floor": 40,
       "months": [
-        {"date": "2024-11-01", "exports": 700, "price": 52},
-        {"date": "2024-12-01", "exports": 710, "price": 51},
-        {"date": "2025-01-01", "exports": 690, "price": 50},
-        {"date": "2025-02-01", "exports": 1300, "price": 49},
-        {"date": "2025-03-01", "exports": 950, "price": 48},
-        {"date": "2025-04-01", "exports": 900, "price": 47}
+        {"date": "2024-11-01", "exports": 700, "price": 52, "routes": [{"origin": "CN", "destination": "US", "volume": 700}]},
+        {"date": "2024-12-01", "exports": 710, "price": 51, "routes": [{"origin": "CN", "destination": "US", "volume": 710}]},
+        {"date": "2025-01-01", "exports": 690, "price": 50, "routes": [{"origin": "CN", "destination": "US", "volume": 690}]},
+        {"date": "2025-02-01", "exports": 1300, "price": 49, "routes": [{"origin": "CN", "transit": "MY", "destination": "US", "volume": 1300}]},
+        {"date": "2025-03-01", "exports": 950, "price": 48, "routes": [{"origin": "CN", "transit": "MY", "destination": "US", "volume": 950}]},
+        {"date": "2025-04-01", "exports": 900, "price": 47, "routes": [{"origin": "CN", "transit": "MY", "destination": "US", "volume": 900}]}
       ]
     }
   },

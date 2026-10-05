@@ -30,7 +30,15 @@ def test_fictional_product_acceptance_cases():
     assert trade_titles == {
         "Exports exceed stated monthly capacity",
         "Export volume increased around enforcement event",
+        "Trade route mix shifted around enforcement event",
     }
+    route_shift = next(signal for signal in strait_crest.signals
+                       if signal.title == "Trade route mix shifted around enforcement event")
+    assert route_shift.claim_kind == "INFERENCE"
+    assert route_shift.source_ids == ("EVENT-MOCK-01", "TRADE-MOCK-S04")
+    assert "CN direct to US" in route_shift.detail
+    assert "CN via MY to US" in route_shift.detail
+    assert "not evidence" in route_shift.detail
     assert strait_crest.own_tier == "High"
     assert solar.suppliers["S06"].own_tier == "Watch"
 
@@ -59,6 +67,7 @@ def test_valid_mock_data_exposes_provenance_contract():
         (lambda data: data["documents"]["T05"][0].update({"reliability": "unknown"}), "unknown reliability"),
         (lambda data: data["documents"]["T05"][0]["ilo_indicators"].append("unknown_indicator"), "unknown ILO indicator"),
         (lambda data: data["documents"]["T05"][0].update({"date": "yesterday"}), "date must be ISO"),
+        (lambda data: data["trade_profiles"]["S04"]["months"][0].update({"routes": [{"origin": "CN", "destination": "US", "volume": -1}]}), "route volume must be nonnegative"),
     ],
 )
 def test_invalid_fixture_data_fails_with_actionable_error(mutate, message):
@@ -147,6 +156,20 @@ def test_missing_and_short_trade_series_do_not_create_unsupported_signals():
     data = fixture_data()
     data["trade_profiles"]["S04"]["months"] = []
     assert not any(signal.pillar == "trade" for signal in detect_signals("S04", MockSource(data), False))
+
+
+def test_route_shift_requires_observed_route_data_and_a_changed_mix():
+    data = fixture_data()
+    for month in data["trade_profiles"]["S04"]["months"]:
+        month.pop("routes")
+    signals = detect_signals("S04", MockSource(data), False)
+    assert not any("route mix shifted" in signal.title.lower() for signal in signals)
+
+    data = fixture_data()
+    for month in data["trade_profiles"]["S04"]["months"][3:]:
+        month["routes"] = [{"origin": "CN", "destination": "US", "volume": month["exports"]}]
+    signals = detect_signals("S04", MockSource(data), False)
+    assert not any("route mix shifted" in signal.title.lower() for signal in signals)
 
 
 def test_worker_reliability_changes_claim_and_strength_not_provenance():

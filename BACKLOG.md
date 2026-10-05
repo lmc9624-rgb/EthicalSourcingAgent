@@ -93,12 +93,13 @@ Implement sector/geography specificity, name normalization and fuzzy listing mat
 
 **Type:** Functional · **Estimate:** 2-4 hours · **Build Plan:** Phase 3 · **Spec:** FR-04
 
-Detect capacity exceedance, volume surges around enforcement events, and recent below-floor prices using the specification's illustrative thresholds. Missing or short series must be handled without exceptions.
+Detect capacity exceedance, volume surges, observable route-mix shifts around enforcement events, and recent below-floor prices using the specification's illustrative thresholds. A route shift requires at least two observed route months on both sides of the event and a total-variation mix shift of at least 0.5; describe it as temporal association, not proof of intentional diversion. Missing route data must not emit a route-shift signal.
 
 **Acceptance criteria**
 - **Given** monthly exports exceed capacity by more than the configured threshold, **when** trade detection runs, **then** it emits an INFERENCE signal showing observed volume, estimated capacity, and ratio.
 - **Given** sufficient before/after months show a qualifying increase after an enforcement event, **when** trade detection runs, **then** it emits a signal citing the event and trade source.
-- **Given** no trade profile or too few months for a comparison, **when** trade detection runs, **then** it returns no unsupported anomaly and does not fail.
+- **Given** at least two route-observed months on each side of an event show a route-mix shift of at least 0.5, **when** trade detection runs, **then** it emits a sourced INFERENCE naming the dominant routes and stating that timing does not prove causation or deliberate diversion.
+- **Given** route observations are missing, stable, or too sparse, **when** trade detection runs, **then** it emits no route-shift signal and does not fail.
 
 ### 7. [M1] Implement worker-indicator and transparency signals
 

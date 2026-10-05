@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from datetime import date
 from difflib import SequenceMatcher
 import re
@@ -136,6 +137,26 @@ def _trade(entity: Entity, source: DataSource) -> list[Signal]:
                 signals.append(Signal("trade", "Export volume increased around enforcement event", min(1.0, surge - 1.0), "INFERENCE",
                                       f"Average exports were {surge:.2f}x higher in available post-event months around {event['date']}; this pattern is not causal evidence.",
                                       (event["id"], profile["id"]), "Review shipment, capacity, and enforcement records for context."))
+        route_before = [row for row in months if date.fromisoformat(row["date"]) < event_date][-3:]
+        route_after = [row for row in months if date.fromisoformat(row["date"]) >= event_date][:3]
+        before_mix, before_months = _route_mix(route_before)
+        after_mix, after_months = _route_mix(route_after)
+        if before_months >= 2 and after_months >= 2:
+            route_keys = set(before_mix) | set(after_mix)
+            shift = 0.5 * sum(abs(before_mix.get(route, 0.0) - after_mix.get(route, 0.0))
+                              for route in route_keys)
+            if shift >= 0.5:
+                previous_route = max(before_mix, key=before_mix.get)
+                observed_route = max(after_mix, key=after_mix.get)
+                signals.append(Signal(
+                    "trade", "Trade route mix shifted around enforcement event", min(1.0, shift), "INFERENCE",
+                    f"Observed shipment-route mix changed by {shift:.0%} across available months around "
+                    f"{event['date']}: dominant route shifted from {_route_label(previous_route)} to "
+                    f"{_route_label(observed_route)}. This is a temporal association, not evidence that "
+                    "enforcement caused the change or that shipments were deliberately diverted.",
+                    (event["id"], profile["id"]),
+                    "Compare bills of lading, customs declarations, and transshipment records to verify the route change.",
+                ))
     floor = profile.get("price_floor")
     below_floor = [row for row in months[-3:] if floor is not None and row.get("price", floor) < floor]
     if below_floor:
@@ -144,6 +165,28 @@ def _trade(entity: Entity, source: DataSource) -> list[Signal]:
                               f"Recent prices fell below the illustrative floor of {floor:g}: {prices}.",
                               (profile["id"],), "Check pricing assumptions and obtain cost and wage documentation."))
     return signals
+
+
+def _route_mix(months: list[dict]) -> tuple[dict[tuple[str, str, str], float], int]:
+    volumes: dict[tuple[str, str, str], float] = defaultdict(float)
+    observed_months = 0
+    for month in months:
+        routes = month.get("routes", [])
+        month_total = sum(route["volume"] for route in routes)
+        if month_total <= 0:
+            continue
+        observed_months += 1
+        for route in routes:
+            key = (route["origin"], route.get("transit", ""), route["destination"])
+            volumes[key] += route["volume"]
+    total = sum(volumes.values())
+    return ({route: volume / total for route, volume in volumes.items()} if total else {}, observed_months)
+
+
+def _route_label(route: tuple[str, str, str]) -> str:
+    origin, transit, destination = route
+    via = f" via {transit}" if transit else " direct"
+    return f"{origin}{via} to {destination}"
 
 
 def _worker(entity_id: str, source: DataSource) -> list[Signal]:

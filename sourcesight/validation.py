@@ -88,6 +88,25 @@ def validate_data(data: dict[str, Any]) -> None:
             errors.append(f"trade profile {profile.get('id', '<unknown>')}: unknown entity '{entity_id}'")
         for month in profile.get("months", []):
             validate_date(month.get("date"), f"trade profile {profile.get('id', '<unknown>')}", errors)
+            routes = month.get("routes", [])
+            if not isinstance(routes, list):
+                errors.append(f"trade profile {profile.get('id', '<unknown>')}: monthly routes must be a list")
+                continue
+            for route in routes:
+                if not isinstance(route, dict):
+                    errors.append(f"trade profile {profile.get('id', '<unknown>')}: each monthly route must be an object")
+                    continue
+                for field in ("origin", "destination", "volume"):
+                    if field not in route:
+                        errors.append(f"trade profile {profile.get('id', '<unknown>')}: route missing required field '{field}'")
+                for field in ("origin", "destination"):
+                    if field in route and (not isinstance(route[field], str) or not route[field].strip()):
+                        errors.append(f"trade profile {profile.get('id', '<unknown>')}: route {field} must be a non-empty string")
+                if "transit" in route and (not isinstance(route["transit"], str) or not route["transit"].strip()):
+                    errors.append(f"trade profile {profile.get('id', '<unknown>')}: route transit must be a non-empty string when provided")
+                volume = route.get("volume")
+                if not isinstance(volume, (int, float)) or volume < 0:
+                    errors.append(f"trade profile {profile.get('id', '<unknown>')}: route volume must be nonnegative")
     for entity_id, records in data.get("documents", {}).items():
         if entity_id not in entities:
             errors.append(f"documents: unknown entity '{entity_id}'")

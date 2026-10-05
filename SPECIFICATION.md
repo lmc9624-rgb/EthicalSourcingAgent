@@ -49,7 +49,7 @@ Each supplier is evaluated on five pillars:
 |---|---|
 | Sector and geography exposure | Sector/country/region risk baselines; the most specific matching row is selected. |
 | Links to listed entities | Fuzzy name matches to listed entities and corporate-network proximity through ownership, shared directors, or shared addresses. |
-| Trade-flow anomalies | Exports above estimated capacity, export surges around enforcement events, and prices below an illustrative legal-labor cost floor. |
+| Trade-flow anomalies | Exports above estimated capacity, export surges or route-mix shifts around enforcement events, and prices below an illustrative legal-labor cost floor. |
 | Worker-level indicators | Documents pre-tagged with one or more of the 11 ILO forced-labor indicators. |
 | Supplier transparency | Whether the supplier discloses upstream sources; a refusal or missing disclosure creates a transparency signal. |
 
@@ -59,7 +59,7 @@ Every signal has a pillar, title, strength from 0 to 1, claim kind (`FACT`, `INF
 
 - **Exposure:** match the entity's sector and any non-empty country/region constraints. If multiple rows match, use the row with the greatest country/region specificity.
 - **Listed-entity linkage:** normalize company names and compare them with a fuzzy similarity threshold of 0.82. A direct match produces a strength-1 signal. The corporate graph then searches up to two hops. Ownership edges have strength 0.8 when ownership is at least 50%, otherwise 0.6; shared-director edges have strength 0.55; shared-address edges have strength 0.5. Multi-hop signal strength is the product of edge strengths.
-- **Trade anomalies:** compare peak monthly exports with stated monthly capacity; a ratio above 1.15 creates a capacity signal. Compare up to three available months before and after an enforcement-event date; a 1.25x or greater increase creates a surge signal. A price-floor signal is created when one or more of the latest three monthly prices are below the configured floor. These are illustrative pattern detectors, not proof of evasion or illegal labor.
+- **Trade anomalies:** compare peak monthly exports with stated monthly capacity; a ratio above 1.15 creates a capacity signal. Compare up to three available months before and after an enforcement-event date; a 1.25x or greater increase creates a surge signal. When route observations (origin, optional transit country, destination, and volume) are available in at least two months on each side of an event, compare their volume-weighted route mixes. A total-variation shift of at least 0.5 creates an INFERENCE signal describing the dominant observed route before and after the event. This flags a temporal route-pattern change for review; it does not establish that enforcement caused the change or that shipments were deliberately diverted. A price-floor signal is created when one or more of the latest three monthly prices are below the configured floor. These are illustrative pattern detectors, not proof of evasion or illegal labor.
 - **Worker indicators:** combine ILO indicator weights using noisy-OR, then multiply by document reliability. Most indicator weights are 0.3; restriction of movement, debt bondage, retention of identity documents, and withholding of wages weigh 0.5; physical and sexual violence weighs 0.6; excessive overtime weighs 0.2. Reliability multipliers are 1.0 (high), 0.75 (medium), and 0.5 (low).
 - **Transparency:** when upstream sources are not disclosed, emit a signal with strength 0.6 if the entity has mapped inputs, or 0.4 otherwise. Transparency contributes to the composite but does not count toward convergence.
 
@@ -117,7 +117,7 @@ The app must describe the five pillars, convergence thresholds, downstream propa
 The mock cases should demonstrate distinct behaviors:
 
 - The hoodie assessment reaches High product risk through the Xinjiang ginnery (E05), while the Indian cotton source (E06) remains Low.
-- The solar case detects capacity and post-enforcement volume anomalies for Strait Crest Trading (S04) and assigns it High; Baotou Northern Wafer (S06), with exposure alone, remains Watch.
+- The solar case detects capacity, post-enforcement volume, and observed route-mix changes for Strait Crest Trading (S04) and assigns it High; Baotou Northern Wafer (S06), with exposure alone, remains Watch.
 - The tuna case surfaces worker-level indicators for the recruitment broker (T05), while the certified alternative fleet (T06) remains Low.
 - Memos for all three cases explicitly distinguish risk indicators from findings and never assert that a supplier uses forced labor.
 - Scores, paths, sources, and supplier details remain inspectable without enabling the AI analyst.
